@@ -1,0 +1,11 @@
+<project>
+  <name>orm-cleanner-plugin-test</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>orm-cleanner</artifactId>
+        <configuration></configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
