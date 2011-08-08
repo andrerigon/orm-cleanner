@@ -40,29 +40,31 @@ public class OrmCleanner extends AbstractMojo {
 	private File outputDirectory;
 
 	public void execute() throws MojoExecutionException {
-		File f = outputDirectory;
-
-		if (!f.exists()) {
-			f.mkdirs();
+		if (!outputDirectory.exists()) {
+			outputDirectory.mkdirs();
 		}
 
-		File touch = new File(f, "touch.txt");
+		File touch = new File(outputDirectory, "touch.txt");
 
-		FileWriter w = null;
+		FileWriter writer = null;
 		try {
-			w = new FileWriter(touch);
+			writer = new FileWriter(touch);
 
-			w.write("touch.txt");
+			writer.write("touch.txt");
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error creating file " + touch, e);
 		} finally {
-			if (w != null) {
+			if (writer != null) {
 				try {
-					w.close();
+					writer.close();
 				} catch (IOException e) {
 					// ignore
 				}
 			}
 		}
+	}
+
+	public void setOutputDirectory(File outputDirectory) {
+		this.outputDirectory = outputDirectory;
 	}
 }
