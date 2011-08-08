@@ -1,12 +1,14 @@
 package br.com.zup.test;
 
+import java.io.File;
+
 import org.codehaus.plexus.PlexusTestCase;
 
 import br.com.zup.OrmCleanner;
 
 public class OrmCleannerTest extends PlexusTestCase {
 	
-	public static final String DEFAULT_POM_TEST = "target/test-classes/unit/orm-cleanner-test/plugin-config.xml";
+	public static final String DEFAULT_OUTPUT_DIRECTORY = "target/test-classes/unit/orm-cleanner-test/";
 
 	private OrmCleanner mojo;
 	
@@ -19,7 +21,7 @@ public class OrmCleannerTest extends PlexusTestCase {
 	}
 
 	public void setParameters() {
-		
+		mojo.setOutputDirectory(new File(getBasedir(), DEFAULT_OUTPUT_DIRECTORY));
 	}
 
 }
