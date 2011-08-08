@@ -1,6 +1,8 @@
 package br.com.zup.test;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -13,6 +15,8 @@ public class OrmCleannerTest extends PlexusTestCase {
 	public static final String DEFAULT_OUTPUT_DIRECTORY = "target/test-classes/unit/orm-cleanner-test/";
 	
 	public static final String DEFAULT_PACKAGE_SCAN = "br.com.ctbc.model";
+	
+	public static final String DEFAULT_DIRECTORY_SCAN = "src/main/java/br/com/ctbc/model";
 
 	private OrmCleanner mojo;
 	
@@ -49,12 +53,20 @@ public class OrmCleannerTest extends PlexusTestCase {
 		List<File> scanFiles = mojo.getFilesToScan();
 		
 		assertNotNull(scanFiles);
-		assertTrue("scanFiles is empty", !scanFiles.isEmpty());
+		
+		assertEquals(scanFiles, getFilesTest());
+	}
+	
+	private List<File> getFilesTest() {
+		File modelDir = new File(outputDirectory, DEFAULT_DIRECTORY_SCAN);
+		
+		return Arrays.asList( modelDir.listFiles() );
 	}
 
-	public void setParameters() {
+	private void setParameters() {
 		mojo.setOutputDirectory(outputDirectory);
 		mojo.setPackageScan(DEFAULT_PACKAGE_SCAN);
+		mojo.setBasedir(outputDirectory);
 	}
 
 }

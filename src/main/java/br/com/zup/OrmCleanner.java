@@ -16,12 +16,15 @@ package br.com.zup;
  * limitations under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Goal which touches a timestamp file.
@@ -31,13 +34,32 @@ import java.io.IOException;
  * @phase process-sources
  */
 public class OrmCleanner extends AbstractMojo {
+	
+	private static final String LOCATION_SOURCE = "src/main/java";
+	
 	/**
-	 * Location of the file.
+	 * Location of the output jar.
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required
 	 */
 	private File outputDirectory;
+	
+	/**
+	 * Location of the package to scan.
+	 * 
+	 * @parameter expression="${package.scan}"
+	 * @required
+	 */
+	private String packageScan;
+	
+	/**
+	 * Root directory of the project.
+	 * 
+	 * @parameter expression="${basedir}"
+	 * @required
+	 */
+	private File basedir;
 
 	public void execute() throws MojoExecutionException {
 		if (!outputDirectory.exists()) {
@@ -63,8 +85,37 @@ public class OrmCleanner extends AbstractMojo {
 			}
 		}
 	}
+	
+	public List<File> getFilesToScan() {
+		File sourceLocation = new File(basedir, LOCATION_SOURCE);
+		File directoryScan = new File(sourceLocation, packageToDirectory(packageScan));
+		
+		return Arrays.asList( directoryScan.listFiles() );
+	}
+	
+	private String packageToDirectory(String packageToConverter) {
+		String packages[] = packageToConverter.split("\\.");
+		
+		StringBuilder converter = new StringBuilder();
+		
+		for (String atualPackage : packages) {
+			converter.append(atualPackage);
+			converter.append("/");
+		}
+		
+		return converter.toString();
+	}
 
 	public void setOutputDirectory(File outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
+
+	public void setPackageScan(String packageScan) {
+		this.packageScan = packageScan;
+	}
+
+	public void setBasedir(File basedir) {
+		this.basedir = basedir;
+	}
+
 }
