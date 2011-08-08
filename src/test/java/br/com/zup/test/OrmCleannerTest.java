@@ -1,6 +1,7 @@
 package br.com.zup.test;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.PlexusTestCase;
@@ -10,6 +11,8 @@ import br.com.zup.OrmCleanner;
 public class OrmCleannerTest extends PlexusTestCase {
 	
 	public static final String DEFAULT_OUTPUT_DIRECTORY = "target/test-classes/unit/orm-cleanner-test/";
+	
+	public static final String DEFAULT_PACKAGE_SCAN = "br.com.ctbc.model";
 
 	private OrmCleanner mojo;
 	
@@ -41,9 +44,17 @@ public class OrmCleannerTest extends PlexusTestCase {
 		if (!touch.exists())
 			fail("touch not write");
 	}
+	
+	public void testGetFilesToScan() {
+		List<File> scanFiles = mojo.getFilesToScan();
+		
+		assertNotNull(scanFiles);
+		assertTrue("scanFiles is empty", !scanFiles.isEmpty());
+	}
 
 	public void setParameters() {
 		mojo.setOutputDirectory(outputDirectory);
+		mojo.setPackageScan(DEFAULT_PACKAGE_SCAN);
 	}
 
 }
