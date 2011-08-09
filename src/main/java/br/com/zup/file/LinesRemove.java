@@ -27,14 +27,14 @@ public enum LinesRemove {
 	ANNOTATION_ONE_TO_MANY("@OneToMany(.)"),
 	ANNOTATION_MANY_TO_MANY("@ManyToMany(.)");
 
-	private final String line;
+	private final String lineRegex;
 
-	private LinesRemove(String line) {
-		this.line = line;
+	private LinesRemove(String lineRegex) {
+		this.lineRegex = lineRegex;
 	}
 
-	public String line() {
-		return line;
+	public String lineRegex() {
+		return lineRegex;
 	}
 	
 	
