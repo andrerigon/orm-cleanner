@@ -17,15 +17,15 @@ public enum LinesRemove {
 	
 	// ANNOTATIONS
 	ANNOTATION_ENTITY("@Entity"),
-	ANNOTATION_TABLE("@Table(.)"),
+	ANNOTATION_TABLE("@Table\\(.*\\)"),
 	ANNOTATION_ID("@Id"),
-	ANNOTATION_COLUMN("@Column(.)"),
-	ANNOTATION_ONE_TO_ONE("@OneToOne(.)"),
-	ANNOTATION_JOIN_COLUMN("@JoinColumn(.)"),
+	ANNOTATION_COLUMN("@Column\\(.*\\)"),
+	ANNOTATION_ONE_TO_ONE("@OneToOne\\(.*\\)"),
+	ANNOTATION_JOIN_COLUMN("@JoinColumn\\(.*\\)"),
 	ANNOTATION_MANY_TO_ONE("@ManyToOne"),
 	ANNOTATION_TRANSIENT("@Transient"),
-	ANNOTATION_ONE_TO_MANY("@OneToMany(.)"),
-	ANNOTATION_MANY_TO_MANY("@ManyToMany(.)");
+	ANNOTATION_ONE_TO_MANY("@OneToMany\\(.*\\)"),
+	ANNOTATION_MANY_TO_MANY("@ManyToMany\\(.*\\)");
 
 	private final String lineRegex;
 
