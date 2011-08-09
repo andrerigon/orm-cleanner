@@ -3,6 +3,7 @@ package br.com.zup.file.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -46,11 +47,18 @@ public class FileCleannerTest {
 		
 		File noEntityFile = new File(localDir + LOCATION_CLASSES + NO_ENTITY_CLASS);
 		FileReader noEntityReader = new FileReader(noEntityFile);
+		BufferedReader noEntityBuffer = new BufferedReader(noEntityReader);
+		StringBuilder noEntity = new StringBuilder();
 		
 		FileCleanner cleanner = new FileCleanner(entityFile);
-		FileReader entityReader = cleanner.clean();
+		String entity = cleanner.clean();
 		
-		assertTrue( entityReader.equals(noEntityReader) );
+		String line;
+		while ( (line = noEntityBuffer.readLine()) != null ) {
+			noEntity.append(line);
+		}
+		
+		assertTrue( noEntity.toString().equals(entity) );
 	}
 
 }
