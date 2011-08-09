@@ -23,12 +23,17 @@ public class FileCleanner {
 
 	public boolean isEntity() throws IOException {
 		String line;
-		Pattern regex = Pattern.compile(LinesRemove.ANNOTATION_ENTITY.lineRegex());  
 		while ( (line = reader.readLine()) != null ) {
-			Matcher matcher = regex.matcher(line);
-			if (matcher.find())
+			if ( existisEntity(line) )
 				return true;
 		}
+		return false;
+	}
+
+	private boolean existisEntity(String line) {
+		Matcher matcher = matcherFromRegex(line, LinesRemove.ANNOTATION_ENTITY);
+		if (matcher.find())
+			return true;
 		return false;
 	}
 
