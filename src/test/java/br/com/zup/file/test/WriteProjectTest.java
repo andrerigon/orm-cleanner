@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import br.com.zup.file.WriteProject;
 
-public class WireteProjectTest {
+public class WriteProjectTest {
 
 	private static final String BASE_LOCATION = "/target/export-project/";
 	
@@ -34,7 +34,7 @@ public class WireteProjectTest {
 			deleteFiles(output);
 	}
 	
-	private void deleteFiles(File file) throws IOException {
+	public static void deleteFiles(File file) throws IOException {
 		if (file.isDirectory()) {
 			List<File> files = Arrays.asList( file.listFiles() );
 			if (!files.isEmpty())
