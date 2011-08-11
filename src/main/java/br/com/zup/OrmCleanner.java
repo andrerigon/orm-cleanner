@@ -93,16 +93,10 @@ public class OrmCleanner extends AbstractMojo {
 	}
 	
 	private static String packageToDirectory(String packageToConverter) {
-		String packages[] = packageToConverter.split("\\.");
-		
-		StringBuilder converter = new StringBuilder();
-		
-		for (String atualPackage : packages) {
-			converter.append(atualPackage);
-			converter.append("/");
-		}
-		
-		return converter.toString();
+		return packageToConverter.replaceAll("\\.", "/");
+//		String packages[] = packageToConverter.split("\\.");
+//		StringBuilder converter = unionStrings(packages);
+//		return converter.toString();
 	}
 
 	public void setOutputDirectory(File outputDirectory) {
