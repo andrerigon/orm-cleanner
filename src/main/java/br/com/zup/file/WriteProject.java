@@ -15,11 +15,10 @@ public class WriteProject {
 
 	public void writeDirectoryIfNotExists(String directory) throws IOException {
 		File directoryFile = new File(projectLocation, DEFAULT_SOURCE_LOCATION + directory);
-		if (!directoryFile.exists()) {
+		if (!directoryFile.exists())
 			directoryFile.mkdirs();
-		} else if (directoryFile.isFile()) {
+		else if (directoryFile.isFile())
 			throw new IOException("Directory can not be created because it already exists a file with the same name");
-		}
 	}
 
 }
