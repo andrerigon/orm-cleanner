@@ -1,31 +1,25 @@
 package br.com.zup.file;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-
-import br.com.zup.pomxml.Dependency;
 
 public class WriteProject {
 	
-	private File location;
+	private File projectLocation;
+	private static final String DEFAULT_SOURCE_LOCATION = "src/main/java/"; 
 	
-	public WriteProject(File location) throws IOException {
+	public WriteProject(File projectLocation) throws IOException {
 		super();
-		this.location = location;
+		this.projectLocation = projectLocation;
 	}
 
-	public void generateProject() throws IOException {
-		writeProjectDirectory();
-	}
-
-	private void writeProjectDirectory() throws IOException {
-		String error = "Directory %s, not can be write";
-		if (!location.mkdirs())
-			throw new IOException(String.format(error, location.toString()));
-		if (!projectDirectory.mkdir())
-			throw new IOException(String.format(error, projectDirectory.toString()));
+	public void writeDirectoryIfNotExists(String directory) throws IOException {
+		File directoryFile = new File(projectLocation, DEFAULT_SOURCE_LOCATION + directory);
+		if (!directoryFile.exists()) {
+			directoryFile.mkdirs();
+		} else if (directoryFile.isFile()) {
+			throw new IOException("Directory can not be created because it already exists a file with the same name");
+		}
 	}
 
 }
