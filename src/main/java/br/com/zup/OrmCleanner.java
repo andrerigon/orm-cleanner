@@ -19,7 +19,6 @@ package br.com.zup;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,7 +92,7 @@ public class OrmCleanner extends AbstractMojo {
 		return Arrays.asList( directoryScan.listFiles() );
 	}
 	
-	private String packageToDirectory(String packageToConverter) {
+	private static String packageToDirectory(String packageToConverter) {
 		String packages[] = packageToConverter.split("\\.");
 		
 		StringBuilder converter = new StringBuilder();
