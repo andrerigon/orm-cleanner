@@ -19,7 +19,7 @@ package br.com.zup;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -89,7 +89,20 @@ public class OrmCleanner extends AbstractMojo {
 		File sourceLocation = new File(basedir, LOCATION_SOURCE);
 		File directoryScan = new File(sourceLocation, packageToDirectory(packageScan));
 		
-		return Arrays.asList( directoryScan.listFiles() );
+		return getAllFilesFromDirectory(directoryScan);
+	}
+	
+	private List<File> getAllFilesFromDirectory(File directory) {
+		List<File> files = new ArrayList<File>();
+		if (directory.isDirectory())
+			for (File currentFile : directory.listFiles())
+				files.addAll( getAllFilesFromDirectory(currentFile) );
+		return directory.isFile() ? addFileToListt(directory, files) : files;
+	}
+
+	private List<File> addFileToListt(File directory, List<File> list) {
+		list.add(directory);
+		return list;
 	}
 	
 	public static String packageToDirectory(String packageToConverter) {

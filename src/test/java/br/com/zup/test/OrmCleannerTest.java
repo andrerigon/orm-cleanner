@@ -1,8 +1,8 @@
 package br.com.zup.test;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -51,10 +51,10 @@ public class OrmCleannerTest extends PlexusTestCase {
 	
 	public void testGetFilesToScan() {
 		List<File> scanFiles = mojo.getFilesToScan();
-		
 		assertNotNull(scanFiles);
-		
-		assertEquals(scanFiles, getFilesTest());
+		Collections.sort( getFilesTest() );
+		Collections.sort( scanFiles );
+		assertEquals(getFilesTest(), scanFiles);
 	}
 	
 	public void testPackageToDirectory() {
@@ -64,9 +64,14 @@ public class OrmCleannerTest extends PlexusTestCase {
 	}
 	
 	private List<File> getFilesTest() {
-		File modelDir = new File(outputDirectory, DEFAULT_DIRECTORY_SCAN);
+		List<File> files = new ArrayList<File>();
+		files.add( new File(outputDirectory, DEFAULT_DIRECTORY_SCAN + "/Agent.java") );
+		files.add( new File(outputDirectory, DEFAULT_DIRECTORY_SCAN + "/AgentClean.java") );
+		files.add( new File(outputDirectory, DEFAULT_DIRECTORY_SCAN + "/Agreement.java") );
+		files.add( new File(outputDirectory, DEFAULT_DIRECTORY_SCAN + "/subModel/Agent.java") );
+		files.add( new File(outputDirectory, DEFAULT_DIRECTORY_SCAN + "/subModel/Agreement.java") );
 		
-		return Arrays.asList( modelDir.listFiles() );
+		return files;
 	}
 
 	private void setParameters() {
