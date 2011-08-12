@@ -57,6 +57,12 @@ public class OrmCleannerTest extends PlexusTestCase {
 		assertEquals(scanFiles, getFilesTest());
 	}
 	
+	public void testPackageToDirectory() {
+		String directory;
+		directory = OrmCleanner.packageToDirectory(DEFAULT_PACKAGE_SCAN);
+		assertEquals("br/com/ctbc/model", directory);
+	}
+	
 	private List<File> getFilesTest() {
 		File modelDir = new File(outputDirectory, DEFAULT_DIRECTORY_SCAN);
 		

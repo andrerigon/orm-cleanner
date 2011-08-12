@@ -92,11 +92,8 @@ public class OrmCleanner extends AbstractMojo {
 		return Arrays.asList( directoryScan.listFiles() );
 	}
 	
-	private static String packageToDirectory(String packageToConverter) {
+	public static String packageToDirectory(String packageToConverter) {
 		return packageToConverter.replaceAll("\\.", "/");
-//		String packages[] = packageToConverter.split("\\.");
-//		StringBuilder converter = unionStrings(packages);
-//		return converter.toString();
 	}
 
 	public void setOutputDirectory(File outputDirectory) {
