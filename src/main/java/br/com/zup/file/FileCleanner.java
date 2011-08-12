@@ -8,19 +8,24 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.zup.exception.NotFoundPackage;
+
 public class FileCleanner {
 
-	File javaClass;
-	FileReader entity;
-	BufferedReader reader;
+	private File javaClass;
+	private FileReader entity;
+	private BufferedReader reader;
+	
+	private static final String regexPackage = "package (.*?);";
 	
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
 		this.javaClass = javaClass;
 		this.entity = new FileReader(this.javaClass);
 		this.reader = new BufferedReader(this.entity);
+		
 	}
-
+	
 	public boolean isEntity() throws IOException {
 		String line;
 		while ( (line = reader.readLine()) != null ) {
@@ -64,10 +69,28 @@ public class FileCleanner {
 		return currentLine;
 	}
 
-	private Matcher matcherFromRegex(String currentLine, LinesRemove currentRegex) {
-		Pattern currentPattern = Pattern.compile(currentRegex.lineRegex() );
+	private Matcher matcherFromRegex(String currentLine, LinesRemove regex) {
+		Pattern currentPattern = Pattern.compile(regex.lineRegex() );
 		Matcher matcher = currentPattern.matcher(currentLine);
 		return matcher;
+	}
+
+	private Matcher matcherFromRegex(String currentLine, String regex) {
+		Pattern currentPattern = Pattern.compile(regex );
+		Matcher matcher = currentPattern.matcher(currentLine);
+		return matcher;
+	}
+
+	public String getPackageClass() throws IOException, NotFoundPackage {
+		String line;
+		while ( (line = reader.readLine()) != null ) {
+			Matcher matcher = matcherFromRegex(line, regexPackage);
+			while (matcher.find()) {
+				if (matcher.groupCount() > 0)
+					return matcher.group(1);
+			}
+		}
+		throw new NotFoundPackage(String.format("%s not contains package", javaClass.getName()));
 	}
 	
 }

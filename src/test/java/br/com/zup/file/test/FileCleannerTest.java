@@ -1,5 +1,6 @@
 package br.com.zup.file.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,12 +11,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import br.com.zup.exception.NotFoundPackage;
 import br.com.zup.file.FileCleanner;
 
 public class FileCleannerTest {
 
 	private static final String ENTITY_CLASS = "Agent.java";
 	private static final String NO_ENTITY_CLASS = "AgentClean.java";
+	private static final String NO_PACKAGE_CLASS = "AgentNoPackage.java";
 
 	private static final String LOCATION_CLASSES = "/target/test-classes/unit/orm-cleanner-test/src/main/java/br/com/ctbc/model/";
 
@@ -59,6 +62,22 @@ public class FileCleannerTest {
 		}
 		
 		assertTrue( noEntity.toString().equals(entity) );
+	}
+	
+	@Test
+	public void shouldGetPackage() throws Exception {
+		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + ENTITY_CLASS);
+
+		FileCleanner cleanner = new FileCleanner(entityFile);
+		assertEquals("br.com.ctbc.maestro.vantive.domain.agent", cleanner.getPackageClass());
+	}
+	
+	@Test(expected=NotFoundPackage.class)
+	public void shouldNotFoundPackageExceptionIfGetPackageFails() throws Exception {
+		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + NO_PACKAGE_CLASS);
+
+		FileCleanner cleanner = new FileCleanner(entityFile);
+		assertEquals("br.com.ctbc.maestro.vantive.domain.agent", cleanner.getPackageClass());
 	}
 
 }
