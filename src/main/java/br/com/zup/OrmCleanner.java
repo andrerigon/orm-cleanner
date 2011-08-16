@@ -53,6 +53,8 @@ import br.com.zup.file.FileCleanner;
  */
 public class OrmCleanner extends AbstractMojo {
 	
+	private static final String EXCLUDE_SVN = ".svn";
+
 	private static final String LOCATION_SOURCE = "src/main/java";
 	
 	/**
@@ -139,7 +141,7 @@ public class OrmCleanner extends AbstractMojo {
 	
 	private List<File> getAllFilesFromDirectory(File directory) {
 		List<File> files = new ArrayList<File>();
-		if (directory.isDirectory())
+		if (directory.isDirectory() && !directory.getName().equals(EXCLUDE_SVN) )
 			for (File currentFile : directory.listFiles())
 				files.addAll( getAllFilesFromDirectory(currentFile) );
 		return directory.isFile() ? addFileToListt(directory, files) : files;
