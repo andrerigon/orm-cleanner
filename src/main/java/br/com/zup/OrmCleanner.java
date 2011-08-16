@@ -83,6 +83,8 @@ public class OrmCleanner extends AbstractMojo {
 	private File basedir;
 
 	public void execute() throws MojoExecutionException {
+		deleteAllFilesOnOutputDirectory();
+		
 		List<File> filesToScan = getFilesToScan();
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
 		
