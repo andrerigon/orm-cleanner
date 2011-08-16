@@ -17,6 +17,7 @@ package br.com.zup;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+
+import br.com.zup.exception.NotFoundPackage;
+import br.com.zup.file.FileCleanner;
 
 /**
  * Goal which touches a timestamp file.
@@ -39,7 +43,7 @@ public class OrmCleanner extends AbstractMojo {
 	/**
 	 * Location of the output jar.
 	 * 
-	 * @parameter expression="${project.build.directory}"
+	 * @parameter expression="${save.project}"
 	 * @required
 	 */
 	private File outputDirectory;
@@ -61,29 +65,55 @@ public class OrmCleanner extends AbstractMojo {
 	private File basedir;
 
 	public void execute() throws MojoExecutionException {
-		if (!outputDirectory.exists()) {
-			outputDirectory.mkdirs();
-		}
+		List<File> filesToScan = getFilesToScan();
+		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
+		
+		cleanAndSaveFiles(filesToCleanAndSave);
+	}
 
-		File touch = new File(outputDirectory, "touch.txt");
 
-		FileWriter writer = null;
-		try {
-			writer = new FileWriter(touch);
 
-			writer.write("touch.txt");
-		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating file " + touch, e);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					// ignore
-				}
+	private List<FileCleanner> getFilesToCleanAndSave(List<File> filesToScan) {
+		List<FileCleanner> filesToCleanAndSave = new ArrayList<FileCleanner>();
+		
+		for (File currentFile : filesToScan) {
+			try {
+				FileCleanner cleanner = new FileCleanner(currentFile);
+				if (cleanner.isEntity())
+					filesToCleanAndSave.add(cleanner);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+		return filesToCleanAndSave;
 	}
+
+
+
+	private void cleanAndSaveFiles(List<FileCleanner> filesToCleanAndSave) {
+		File saveSourceDirectory = new File(outputDirectory, LOCATION_SOURCE);
+		for (FileCleanner currentCleanner : filesToCleanAndSave) {
+			try {
+				File parentSaveDirectory = new File(saveSourceDirectory, packageToDirectory(currentCleanner.getPackageClass()) );
+				parentSaveDirectory.mkdirs();
+				FileWriter writterClass = new FileWriter(new File(parentSaveDirectory, currentCleanner.getClassName()));
+				writterClass.write(currentCleanner.clean());
+				writterClass.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotFoundPackage e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+	}
+	
+	
 	
 	public List<File> getFilesToScan() {
 		File sourceLocation = new File(basedir, LOCATION_SOURCE);
