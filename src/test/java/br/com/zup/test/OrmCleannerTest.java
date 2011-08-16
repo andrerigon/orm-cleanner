@@ -55,11 +55,18 @@ public class OrmCleannerTest extends PlexusTestCase {
 		Collections.sort(files);
 		
 		assertEquals(files,mojoTest.getFilesToScan());
+	}
+	
+	public void testDeleteFilesOnExtract() throws Exception {
+		mojo.deleteAllFilesOnOutputDirectory();
 		
-//		File touch = new File(OUTPUT_DIRECTORY, "touch.txt");
-//		
-//		if (!touch.exists())
-//			fail("touch not write");
+		OrmCleanner mojoTest = (OrmCleanner) lookup(OrmCleanner.ROLE);
+		mojoTest.setBasedir(new File(DEFAULT_WRITE_DIRECTORY));
+		mojoTest.setPackageScan(DEFAULT_PACKAGE_SCAN);
+		
+		List<File> files = new ArrayList<File>();
+		
+		assertEquals(files,mojoTest.getFilesToScan());
 	}
 	
 	public void testGetFilesToScan() {

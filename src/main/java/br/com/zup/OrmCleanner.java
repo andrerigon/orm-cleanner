@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -166,6 +167,28 @@ public class OrmCleanner extends AbstractMojo {
 
 	public void setBasedir(File basedir) {
 		this.basedir = basedir;
+	}
+
+
+
+	public void deleteAllFilesOnOutputDirectory() {
+		File directoryToDelete = new File(outputDirectory, LOCATION_SOURCE);
+		try {
+			deleteFiles(directoryToDelete);
+		} catch (IOException e) {
+			getLog().warn("Error deleting old files", e);
+		}
+	}
+	
+	public void deleteFiles(File file) throws IOException {
+		if (file.isDirectory()) {
+			List<File> files = Arrays.asList(file.listFiles());
+			if (!files.isEmpty())
+				for (File currentFile : files) {
+					deleteFiles(currentFile);
+				}
+		}
+		file.delete();
 	}
 
 }
