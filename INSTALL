@@ -1,0 +1,6 @@
+Instalation
+***********
+
+- git clone git://github.com/ZupIT/orm-cleanner.git
+- cd orm-cleanner
+- mvn install
