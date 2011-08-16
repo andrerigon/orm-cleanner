@@ -13,26 +13,33 @@ import br.com.zup.exception.NotFoundPackage;
 public class FileCleanner {
 
 	private File javaClass;
-	private FileReader entity;
-	private BufferedReader reader;
+//	private FileReader entity;
+//	private BufferedReader reader;
 	
 	private static final String regexPackage = "package (.*?);";
 	
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
 		this.javaClass = javaClass;
-		this.entity = new FileReader(this.javaClass);
-		this.reader = new BufferedReader(this.entity);
+//		this.entity = new FileReader(this.javaClass);
+//		this.reader = new BufferedReader(this.entity);
 		
 	}
 	
 	public boolean isEntity() throws IOException {
+		BufferedReader reader = getReader();
 		String line;
 		while ( (line = reader.readLine()) != null ) {
 			if ( existisEntity(line) )
 				return true;
 		}
 		return false;
+	}
+
+	private BufferedReader getReader() throws FileNotFoundException {
+		FileReader entityReader = new FileReader(javaClass);
+		BufferedReader reader = new BufferedReader(entityReader);
+		return reader;
 	}
 
 	private boolean existisEntity(String line) {
@@ -49,6 +56,7 @@ public class FileCleanner {
 	}
 
 	private void replaceContent(StringBuilder entityClean) throws IOException {
+		BufferedReader reader = getReader();
 		String currentLine;
 		while ( (currentLine = reader.readLine()) != null ) {
 			cleanLine(entityClean, currentLine);
@@ -82,6 +90,7 @@ public class FileCleanner {
 	}
 
 	public String getPackageClass() throws IOException, NotFoundPackage {
+		BufferedReader reader = getReader();
 		String line;
 		while ( (line = reader.readLine()) != null ) {
 			Matcher matcher = matcherFromRegex(line, regexPackage);
@@ -91,6 +100,10 @@ public class FileCleanner {
 			}
 		}
 		throw new NotFoundPackage(String.format("%s not contains package", javaClass.getName()));
+	}
+	
+	public String getClassName() {
+		return javaClass.getName();
 	}
 	
 }
