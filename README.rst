@@ -19,6 +19,29 @@ Deploy
 ::
 
     $ mvn clean install
+    
+Usage
+*****
+
+::
+
+	<plugin>
+		<groupId>br.com.zup</groupId>
+		<artifactId>orm-cleanner</artifactId>
+		<configuration>
+			<outputDirectory>/home/user/project-exemple</outputDirectory>
+			<packageScan>org.organization.model.entities</packageScan>
+		</configuration>
+		<executions>
+        <execution>
+          <id>default-compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+        </execution>
+      </executions>
+	</plugin>
 
 
 Referencies
