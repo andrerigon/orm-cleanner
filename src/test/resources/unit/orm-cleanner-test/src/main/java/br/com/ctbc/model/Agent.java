@@ -1,4 +1,4 @@
-package br.com.ctbc.maestro.vantive.domain.agent;
+package br.com.ctbc.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

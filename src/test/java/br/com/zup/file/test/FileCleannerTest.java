@@ -69,7 +69,7 @@ public class FileCleannerTest {
 		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + ENTITY_CLASS);
 
 		FileCleanner cleanner = new FileCleanner(entityFile);
-		assertEquals("br.com.ctbc.maestro.vantive.domain.agent", cleanner.getPackageClass());
+		assertEquals("br.com.ctbc.model", cleanner.getPackageClass());
 	}
 	
 	@Test(expected=NotFoundPackage.class)
