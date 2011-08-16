@@ -105,5 +105,10 @@ public class FileCleanner {
 	public String getClassName() {
 		return javaClass.getName();
 	}
+
+	@Override
+	public String toString() {
+		return javaClass.toString();
+	}
 	
 }
