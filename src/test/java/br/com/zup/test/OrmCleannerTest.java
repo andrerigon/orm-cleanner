@@ -3,7 +3,9 @@ package br.com.zup.test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.plexus.PlexusTestCase;
 
@@ -87,6 +89,55 @@ public class OrmCleannerTest extends PlexusTestCase {
 		assertEquals("br/com/ctbc/model", directory);
 	}
 	
+	public void testGetProjectsAndPackages() {
+		String packageScan = "project-test:br.com.zup.domain;project-test:br.com.comporation.api;project-exemple:br.com.organization.domain;project-exemple:br.com.organization.api";
+		Map<String, List<String>> compareProjects = new HashMap<String, List<String>>();
+		List<String> projectTest = new ArrayList<String>();
+		projectTest.add("br.com.zup.domain");
+		projectTest.add("br.com.comporation.api");
+		compareProjects.put("project-test", projectTest);
+		List<String> projectExemple = new ArrayList<String>();
+		projectExemple.add("br.com.organization.domain");
+		projectExemple.add("br.com.organization.api");
+		compareProjects.put("project-exemple", projectExemple);
+		
+		Map<String, List<String>> retorno = mojo.getProjectsAndPackages(packageScan);
+		assertEquals(compareProjects, retorno);
+	}
+	
+	public void testGetDirsToScan() {
+		String packageScan = "project-test:br.com.zup.domain;project-test:br.com.comporation.api;project-exemple:br.com.organization.domain;project-exemple:br.com.organization.api";
+		Map<String, List<String>> projects = mojo.getProjectsAndPackages(packageScan);
+		
+		List<String> dirs = mojo.getDirsToScan(projects);
+		List<String> compareDirs = new ArrayList<String>();
+		compareDirs.add("project-test/br/com/zup/domain");
+		compareDirs.add("project-test/br/com/comporation/api");
+		compareDirs.add("project-exemple/br/com/organization/domain");
+		compareDirs.add("project-exemple/br/com/organization/api");
+		
+		Collections.sort(dirs);
+		Collections.sort(compareDirs);
+		
+		assertEquals(compareDirs, dirs);
+	}
+	
+	public void testGetPackages() {
+		String packageScan = "project-test:br.com.zup.domain;project-test:br.com.comporation.api;project-exemple:br.com.organization.domain;project-exemple:br.com.organization.api";
+		Map<String, List<String>> projects = mojo.getProjectsAndPackages(packageScan);
+		
+		List<String> pack = mojo.getPackages(projects);
+		List<String> comparePack = new ArrayList<String>();
+		comparePack.add("br.com.zup.domain");
+		comparePack.add("br.com.comporation.api");
+		comparePack.add("br.com.organization.domain");
+		comparePack.add("br.com.organization.api");
+		Collections.sort(pack);
+		Collections.sort(comparePack);
+		
+		assertEquals(comparePack, pack);
+	}
+	
 	private List<File> getFilesTest() {
 		List<File> files = new ArrayList<File>();
 		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/Agent.java") );
@@ -98,7 +149,7 @@ public class OrmCleannerTest extends PlexusTestCase {
 		
 		return files;
 	}
-
+	
 	private void setParameters() {
 		mojo.setOutputDirectory(new File(getBasedir(), DEFAULT_WRITE_DIRECTORY));
 		mojo.setPackageScan(DEFAULT_PACKAGE_SCAN);

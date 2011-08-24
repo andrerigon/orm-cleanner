@@ -34,7 +34,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -56,7 +58,9 @@ public class OrmCleanner extends AbstractMojo {
 
 	private static final String EXCLUDE_SVN = ".svn";
 
-	private static final String LOCATION_SOURCE = "maestro-vantive/src/main/java";
+	private static final String fileSeparator = System.getProperty("file.separator");
+	
+	private static final String LOCATION_SOURCE = "src/main/java".replaceAll("/", fileSeparator);
 
 	/**
 	 * Location of the output jar.
@@ -85,12 +89,56 @@ public class OrmCleanner extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		getLog().debug("In OrmCleanner::execute()");
 		
+		// Project and list of packages
+		Map<String, List<String>> projectsToScan = getProjectsAndPackages(packageScan);
+		
+		List<String> scanDirs = getDirsToScan(projectsToScan);
+		
+		List<String> packages = getPackages(projectsToScan);
+		
 		deleteAllFilesOnOutputDirectory();
 
 		List<File> filesToScan = getFilesToScan();
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
 
 		cleanAndSaveFiles(filesToCleanAndSave);
+	}
+
+	public Map<String, List<String>> getProjectsAndPackages(String projectsAndPackages) {
+		Map<String, List<String>> projectsToScan = new HashMap<String, List<String>>();
+		
+		String[] packagesAndProjects = projectsAndPackages.split(";");
+		for (String projectAndPackage : packagesAndProjects) {
+			String[] scan = projectAndPackage.split(":");
+			if (projectsToScan.containsKey(scan[0].trim())) {
+				projectsToScan.get(scan[0].trim()).add(scan[1].trim());
+			} else {
+				List<String> packages = new ArrayList<String>();
+				packages.add(scan[1].trim());
+				projectsToScan.put(scan[0].trim(), packages);
+			}
+		}
+		return projectsToScan;
+	}
+	
+	public List<String> getPackages(Map<String, List<String>> projects) {
+		List<String> packages = new ArrayList<String>();
+		for (String key: projects.keySet()) {
+			for (String currentPackage: projects.get(key)) {
+				packages.add(currentPackage);
+			}
+		}
+		return packages;
+	}
+	
+	public List<String> getDirsToScan(Map<String, List<String>> projects) {
+		List<String> directories = new ArrayList<String>();
+		for (String key: projects.keySet()) {
+			for (String currentPackage: projects.get(key)) {
+				directories.add(key + fileSeparator + packageToDirectory(currentPackage) );
+			}
+		}
+		return directories;
 	}
 
 	private List<FileCleanner> getFilesToCleanAndSave(List<File> filesToScan) {
@@ -144,8 +192,8 @@ public class OrmCleanner extends AbstractMojo {
 
 		getLog().info(String.format("Dirs: %s", this.packageScan));
 		String[] packages = this.packageScan.split(";");
-		for (int i = 0; i < packages.length; i++) {
-			String pack = packages[i].trim();
+		for (String currentPackage: packages) {
+			String pack = currentPackage.trim();
 			getLog().info(String.format("Pacakge: %s", pack));
 			File directoryScan = new File(sourceLocation, packageToDirectory(pack));
 			
@@ -174,7 +222,7 @@ public class OrmCleanner extends AbstractMojo {
 	}
 
 	public static String packageToDirectory(String packageToConverter) {
-		return packageToConverter.replaceAll("\\.", "/");
+		return packageToConverter.replaceAll("\\.", fileSeparator);
 	}
 
 	public void setOutputDirectory(File outputDirectory) {
@@ -198,15 +246,11 @@ public class OrmCleanner extends AbstractMojo {
 	public void deleteAllFilesOnOutputDirectory() {
 		getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
 		
-		String[] packages = this.packageScan.split(";");
-		for (int i = 0; i < packages.length; i++) {
-			String pack = packages[i].trim();
-			File directoryToDelete = new File(new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(pack));
-			try {
-				deleteFiles(directoryToDelete);
-			} catch (IOException e) {
-				getLog().warn("Error deleting old files", e);
-			}
+		File directoryToDelete = new File( new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(packageScan) );
+	    try {
+	    	deleteFiles(directoryToDelete);
+	    } catch (IOException e) {
+	    	getLog().warn("Error deleting old files", e);
 		}
 	}
 
