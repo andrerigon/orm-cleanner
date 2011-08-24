@@ -54,7 +54,10 @@ public class OrmCleannerTest extends PlexusTestCase {
 		
 		Collections.sort(files);
 		
-		assertEquals(files,mojoTest.getFilesToScan());
+		List<File> filesScanned = mojoTest.getFilesToScan();
+		Collections.sort(filesScanned);
+		
+		assertEquals(files,filesScanned);
 	}
 	
 	public void testDeleteFilesOnExtract() throws Exception {
