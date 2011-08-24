@@ -12,8 +12,8 @@ public enum LinesRemove {
 	IMPORT_JOIN_COLUMN("import javax.persistence.JoinColumn;"),
 	IMPORT_MANY_TO_ONE("import javax.persistence.ManyToOne;"),
 	IMPORT_TRANSIENT("import javax.persistence.Transient;"),
-	IMPORT_ONE_TO_MANY("import javax.persistence.OneToMany"),
-	IMPORT_MANY_TO_MANY("import javax.persistence.ManyToMany"),
+	IMPORT_ONE_TO_MANY("import javax.persistence.OneToMany;"),
+	IMPORT_MANY_TO_MANY("import javax.persistence.ManyToMany;"),
 	
 	// ANNOTATIONS
 	ANNOTATION_ENTITY("@Entity"),
