@@ -53,11 +53,11 @@ import br.com.zup.file.FileCleanner;
  * 
  */
 public class OrmCleanner extends AbstractMojo {
-	
+
 	private static final String EXCLUDE_SVN = ".svn";
 
-	private static final String LOCATION_SOURCE = "src/main/java";
-	
+	private static final String LOCATION_SOURCE = "maestro-vantive/src/main/java";
+
 	/**
 	 * Location of the output jar.
 	 * 
@@ -65,7 +65,7 @@ public class OrmCleanner extends AbstractMojo {
 	 * @required
 	 */
 	private File outputDirectory;
-	
+
 	/**
 	 * Location of the package to scan.
 	 * 
@@ -73,7 +73,7 @@ public class OrmCleanner extends AbstractMojo {
 	 * @required
 	 */
 	private String packageScan;
-	
+
 	/**
 	 * Root directory of the project.
 	 * 
@@ -83,19 +83,21 @@ public class OrmCleanner extends AbstractMojo {
 	private File basedir;
 
 	public void execute() throws MojoExecutionException {
-		deleteAllFilesOnOutputDirectory();
+		getLog().debug("In OrmCleanner::execute()");
 		
+		deleteAllFilesOnOutputDirectory();
+
 		List<File> filesToScan = getFilesToScan();
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
-		
+
 		cleanAndSaveFiles(filesToCleanAndSave);
 	}
 
-
-
 	private List<FileCleanner> getFilesToCleanAndSave(List<File> filesToScan) {
-		List<FileCleanner> filesToCleanAndSave = new ArrayList<FileCleanner>();
+		getLog().debug("In OrmCleanner::getFilesToCleanAndSave()");
 		
+		List<FileCleanner> filesToCleanAndSave = new ArrayList<FileCleanner>();
+
 		getLog().info(String.format("Scanning package %s", packageScan));
 		for (File currentFile : filesToScan) {
 			try {
@@ -105,20 +107,21 @@ public class OrmCleanner extends AbstractMojo {
 			} catch (FileNotFoundException e) {
 				getLog().error(String.format("File %s not found", currentFile.toString()), e);
 			} catch (IOException e) {
-				 getLog().error(String.format("Errors occurred when reading file: %s", currentFile.toString()), e);
+				getLog().error(String.format("Errors occurred when reading file: %s", currentFile.toString()), e);
 			}
 		}
 		return filesToCleanAndSave;
 	}
 
-
-
 	private void cleanAndSaveFiles(List<FileCleanner> filesToCleanAndSave) {
-		getLog().info("Saving files:");
+		getLog().debug("In OrmCleanner::cleanAndSaveFiles()");
+		
+		getLog().info(String.format("Saving files: %s", filesToCleanAndSave.toString()));
 		File saveSourceDirectory = new File(outputDirectory, LOCATION_SOURCE);
 		for (FileCleanner currentCleanner : filesToCleanAndSave) {
 			try {
-				File parentSaveDirectory = new File(saveSourceDirectory, packageToDirectory(currentCleanner.getPackageClass()) );
+				File parentSaveDirectory = new File(saveSourceDirectory,
+						packageToDirectory(currentCleanner.getPackageClass()));
 				parentSaveDirectory.mkdirs();
 				File fileWrite = new File(parentSaveDirectory, currentCleanner.getClassName());
 				FileWriter writterClass = new FileWriter(fileWrite);
@@ -129,60 +132,87 @@ public class OrmCleanner extends AbstractMojo {
 				getLog().error(String.format("Errors occurred when saving file: %s", currentCleanner.toString()), e);
 			} catch (NotFoundPackage e) {
 				getLog().error(String.format("File %s, not contains package", currentCleanner.toString()), e);
-			} 
+			}
 		}
 	}
-	
-	
-	
+
 	public List<File> getFilesToScan() {
-		File sourceLocation = new File(basedir, LOCATION_SOURCE);
-		File directoryScan = new File(sourceLocation, packageToDirectory(packageScan));
+		getLog().debug("In OrmCleanner::getFilesToScan()");
 		
-		return getAllFilesFromDirectory(directoryScan);
-	}
-	
-	private List<File> getAllFilesFromDirectory(File directory) {
+		File sourceLocation = new File(basedir, LOCATION_SOURCE);
 		List<File> files = new ArrayList<File>();
-		if (directory.isDirectory() && !directory.getName().equals(EXCLUDE_SVN) )
+
+		getLog().info(String.format("Dirs: %s", this.packageScan));
+		String[] packages = this.packageScan.split(";");
+		for (int i = 0; i < packages.length; i++) {
+			String pack = packages[i].trim();
+			getLog().info(String.format("Pacakge: %s", pack));
+			File directoryScan = new File(sourceLocation, packageToDirectory(pack));
+			
+			getLog().info(String.format("Dir: %s", directoryScan));
+			files.addAll(getAllFilesFromDirectory(directoryScan));
+		}
+
+		return files;
+	}
+
+	private List<File> getAllFilesFromDirectory(File directory) {
+		getLog().debug("In OrmCleanner::getAllFilesFromDirectory()");
+		
+		List<File> files = new ArrayList<File>();
+		if (directory.isDirectory() && !directory.getName().equals(EXCLUDE_SVN))
 			for (File currentFile : directory.listFiles())
-				files.addAll( getAllFilesFromDirectory(currentFile) );
+				files.addAll(getAllFilesFromDirectory(currentFile));
 		return directory.isFile() ? addFileToListt(directory, files) : files;
 	}
 
 	private List<File> addFileToListt(File directory, List<File> list) {
+		getLog().debug("In OrmCleanner::addFileToListt()");
+		
 		list.add(directory);
 		return list;
 	}
-	
+
 	public static String packageToDirectory(String packageToConverter) {
 		return packageToConverter.replaceAll("\\.", "/");
 	}
 
 	public void setOutputDirectory(File outputDirectory) {
+		getLog().debug("In OrmCleanner::setOutputDirectory()");
+		
 		this.outputDirectory = outputDirectory;
 	}
 
 	public void setPackageScan(String packageScan) {
+		getLog().debug("In OrmCleanner::setPackageScan()");
+		
 		this.packageScan = packageScan;
 	}
 
 	public void setBasedir(File basedir) {
+		getLog().debug("In OrmCleanner:execute()");
+		
 		this.basedir = basedir;
 	}
 
-
-
 	public void deleteAllFilesOnOutputDirectory() {
-		File directoryToDelete = new File( new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(packageScan) );
-		try {
-			deleteFiles(directoryToDelete);
-		} catch (IOException e) {
-			getLog().warn("Error deleting old files", e);
+		getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
+		
+		String[] packages = this.packageScan.split(";");
+		for (int i = 0; i < packages.length; i++) {
+			String pack = packages[i].trim();
+			File directoryToDelete = new File(new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(pack));
+			try {
+				deleteFiles(directoryToDelete);
+			} catch (IOException e) {
+				getLog().warn("Error deleting old files", e);
+			}
 		}
 	}
-	
+
 	public void deleteFiles(File file) throws IOException {
+		getLog().debug("In OrmCleanner::deleteFiles()");
+		
 		if (file.isDirectory()) {
 			List<File> files = Arrays.asList(file.listFiles());
 			if (!files.isEmpty())
