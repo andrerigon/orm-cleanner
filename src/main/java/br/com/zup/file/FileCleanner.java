@@ -72,13 +72,13 @@ public class FileCleanner {
 	}
 
 	private String cleanByMatcher(String currentLine, Matcher matcher) {
-		if (matcher.find())
+		while (matcher.find())
 			currentLine = matcher.replaceAll("");
 		return currentLine;
 	}
 
 	private Matcher matcherFromRegex(String currentLine, LinesRemove regex) {
-		Pattern currentPattern = Pattern.compile(regex.lineRegex() );
+		Pattern currentPattern = Pattern.compile(regex.lineRegex(), Pattern.DOTALL );
 		Matcher matcher = currentPattern.matcher(currentLine);
 		return matcher;
 	}
