@@ -174,7 +174,7 @@ public class OrmCleanner extends AbstractMojo {
 
 
 	public void deleteAllFilesOnOutputDirectory() {
-		File directoryToDelete = new File(outputDirectory, LOCATION_SOURCE);
+		File directoryToDelete = new File( new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(packageScan) );
 		try {
 			deleteFiles(directoryToDelete);
 		} catch (IOException e) {
