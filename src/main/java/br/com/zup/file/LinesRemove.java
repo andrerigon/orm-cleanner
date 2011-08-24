@@ -22,7 +22,7 @@ public enum LinesRemove {
 	ANNOTATION_COLUMN("@Column\\(.*\\)"),
 	ANNOTATION_ONE_TO_ONE("@OneToOne\\(.*\\)"),
 	ANNOTATION_JOIN_COLUMN("@JoinColumn\\(.*\\)"),
-	ANNOTATION_MANY_TO_ONE("@ManyToOne"),
+	ANNOTATION_MANY_TO_ONE("@ManyToOne\\(.*\\)"),
 	ANNOTATION_TRANSIENT("@Transient"),
 	ANNOTATION_ONE_TO_MANY("@OneToMany\\(.*\\)"),
 	ANNOTATION_MANY_TO_MANY("@ManyToMany\\(.*\\)");
