@@ -16,16 +16,16 @@ public enum LinesRemove {
 	IMPORT_MANY_TO_MANY("import javax.persistence.ManyToMany;"),
 	
 	// ANNOTATIONS
-	ANNOTATION_ENTITY("@Entity"),
-	ANNOTATION_TABLE("@Table\\(.*\\)"),
-	ANNOTATION_ID("@Id"),
-	ANNOTATION_COLUMN("@Column\\(.*\\)"),
-	ANNOTATION_ONE_TO_ONE("@OneToOne\\(.*\\)"),
-	ANNOTATION_JOIN_COLUMN("@JoinColumn\\(.*\\)"),
-	ANNOTATION_MANY_TO_ONE("@ManyToOne\\(.*\\)"),
-	ANNOTATION_TRANSIENT("@Transient"),
-	ANNOTATION_ONE_TO_MANY("@OneToMany\\(.*\\)"),
-	ANNOTATION_MANY_TO_MANY("@ManyToMany\\(.*\\)");
+	ANNOTATION_ENTITY("@Entity(\\s*\\(.+?\\))|@Entity"),
+	ANNOTATION_TABLE("@Table(\\s*\\(.+?\\))|@Table"),
+	ANNOTATION_ID("@Id(\\s*\\(.+?\\))|@Id"),
+	ANNOTATION_COLUMN("@Column(\\s*\\(.+?\\))|@Column"),
+	ANNOTATION_ONE_TO_ONE("@OneToOne(\\s*\\(.+?\\))|@OneToOne"),
+	ANNOTATION_JOIN_COLUMN("@JoinColumn(\\s*\\(.+?\\))|@JoinColumn"),
+	ANNOTATION_MANY_TO_ONE("@ManyToOne(\\s*\\(.+?\\))|@ManyToOne"),
+	ANNOTATION_TRANSIENT("@Transient(\\s*\\(.+?\\))|@Transient"),
+	ANNOTATION_ONE_TO_MANY("@OneToMany(\\s*\\(.+?\\))|@OneToMany"),
+	ANNOTATION_MANY_TO_MANY("@ManyToMany(\\s*\\(.+?\\))|@ManyToMany");
 
 	private final String lineRegex;
 
