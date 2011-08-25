@@ -109,6 +109,8 @@ public class OrmCleanner extends AbstractMojo {
 	}
 
 	public Map<String, List<String>> getProjectsAndPackages(String projectsAndPackages) {
+		getLog().debug("In OrmCleanner::setBasedir()");
+		
 		Map<String, List<String>> projectsToScan = new HashMap<String, List<String>>();
 		
 		String[] packagesAndProjects = projectsAndPackages.split(";");
@@ -126,6 +128,8 @@ public class OrmCleanner extends AbstractMojo {
 	}
 	
 	public List<String> getPackages(Map<String, List<String>> projects) {
+		getLog().debug("In OrmCleanner::getPackages()");
+		
 		List<String> packages = new ArrayList<String>();
 		for (String key: projects.keySet()) {
 			for (String currentPackage: projects.get(key)) {
@@ -136,6 +140,8 @@ public class OrmCleanner extends AbstractMojo {
 	}
 	
 	public List<String> getDirsToScan(Map<String, List<String>> projects) {
+		getLog().debug("In OrmCleanner::getDirsToScan()");
+		
 		List<String> directories = new ArrayList<String>();
 		for (String key: projects.keySet()) {
 			for (String currentPackage: projects.get(key)) {
@@ -245,7 +251,7 @@ public class OrmCleanner extends AbstractMojo {
 	}
 
 	public void setBasedir(File basedir) {
-		getLog().debug("In OrmCleanner:execute()");
+		getLog().debug("In OrmCleanner::setBasedir()");
 		
 		this.basedir = basedir;
 	}
