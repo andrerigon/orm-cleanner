@@ -20,7 +20,7 @@ public class FileCleannerTest {
 	private static final String NO_ENTITY_CLASS = "AgentClean.java";
 	private static final String NO_PACKAGE_CLASS = "AgentNoPackage.java";
 
-	private static final String LOCATION_CLASSES = "/target/test-classes/unit/orm-cleanner-test/src/main/java/br/com/ctbc/model/";
+	private static final String LOCATION_CLASSES = "/target/test-classes/unit/orm-cleanner-test/project-test/src/main/java/br/com/ctbc/model/";
 
 	private static final String LOCAL_DIR;
 
