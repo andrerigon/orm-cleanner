@@ -1,5 +1,6 @@
 package br.com.zup.file;
 
+
 public enum LinesRemove {
 	
 	// IMPORTS
@@ -9,7 +10,8 @@ public enum LinesRemove {
 	IMPORT_ID("import javax.persistence.Id;"),
 	IMPORT_FETCH_TYPE("import javax.persistence.FetchType;"),
 	IMPORT_ONE_TO_ONE("import javax.persistence.OneToOne;"),
-	IMPORT_JOIN_COLUMN("import javax.persistence.JoinColumn;"),
+	IMPORT_JOIN_COLUMN("import javax.persistence.JoinTable;"),
+	IMPORT_JOIN_TABLE("import javax.persistence.JoinColumn;"),
 	IMPORT_MANY_TO_ONE("import javax.persistence.ManyToOne;"),
 	IMPORT_TRANSIENT("import javax.persistence.Transient;"),
 	IMPORT_ONE_TO_MANY("import javax.persistence.OneToMany;"),
@@ -22,6 +24,7 @@ public enum LinesRemove {
 	ANNOTATION_COLUMN("@Column(\\s*\\(.+?\\))|@Column"),
 	ANNOTATION_ONE_TO_ONE("@OneToOne(\\s*\\(.+?\\))|@OneToOne"),
 	ANNOTATION_JOIN_COLUMN("@JoinColumn(\\s*\\(.+?\\))|@JoinColumn"),
+	ANNOTATION_JOIN_TABLE("@JoinTable(\\s*\\(.+?\\))|@JoinTable"),
 	ANNOTATION_MANY_TO_ONE("@ManyToOne(\\s*\\(.+?\\))|@ManyToOne"),
 	ANNOTATION_TRANSIENT("@Transient(\\s*\\(.+?\\))|@Transient"),
 	ANNOTATION_ONE_TO_MANY("@OneToMany(\\s*\\(.+?\\))|@OneToMany"),
