@@ -31,10 +31,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class WriteProject {
-	
+
 	private File projectLocation;
-	private static final String DEFAULT_SOURCE_LOCATION = "src/main/java/"; 
-	
+	private static final String DEFAULT_SOURCE_LOCATION = "src/main/java/".replaceAll("/",
+			System.getProperty("file.separator"));
+
 	public WriteProject(File projectLocation) throws IOException {
 		super();
 		this.projectLocation = projectLocation;
