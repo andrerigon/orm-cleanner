@@ -1,5 +1,3 @@
-package br.com.zup;
-
 /*
  * Copyright (c) 2011, ZUP IT INNOVATION <contato@zup.com.br> All rights reserved.
  * 
@@ -27,6 +25,7 @@ package br.com.zup;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+package br.com.zup;
 
 import java.io.File;
 import java.io.FileNotFoundException;
