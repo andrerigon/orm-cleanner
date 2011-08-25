@@ -20,7 +20,8 @@ public class FileCleannerTest {
 	private static final String NO_ENTITY_CLASS = "AgentClean.java";
 	private static final String NO_PACKAGE_CLASS = "AgentNoPackage.java";
 
-	private static final String LOCATION_CLASSES = "/target/test-classes/unit/orm-cleanner-test/project-test/src/main/java/br/com/ctbc/model/";
+	private static final String LOCATION_CLASSES = "/target/test-classes/unit/orm-cleanner-test/project-test/src/main/java/br/com/ctbc/model/"
+			.replaceAll("/", System.getProperty("file.separator"));
 
 	private static final String LOCAL_DIR;
 
@@ -47,23 +48,23 @@ public class FileCleannerTest {
 	@Test
 	public void sholdClean() throws Exception {
 		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + ENTITY_CLASS);
-		
+
 		File noEntityFile = new File(LOCAL_DIR + LOCATION_CLASSES + NO_ENTITY_CLASS);
 		FileReader noEntityReader = new FileReader(noEntityFile);
 		BufferedReader noEntityBuffer = new BufferedReader(noEntityReader);
 		StringBuilder noEntity = new StringBuilder();
-		
+
 		FileCleanner cleanner = new FileCleanner(entityFile);
 		String entity = cleanner.clean();
-		
+
 		String line;
-		while ( (line = noEntityBuffer.readLine()) != null ) {
+		while ((line = noEntityBuffer.readLine()) != null) {
 			noEntity.append(line);
 		}
-		
-		assertTrue( noEntity.toString().equals(entity) );
+
+		assertTrue(noEntity.toString().equals(entity));
 	}
-	
+
 	@Test
 	public void shouldGetPackage() throws Exception {
 		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + ENTITY_CLASS);
@@ -71,8 +72,8 @@ public class FileCleannerTest {
 		FileCleanner cleanner = new FileCleanner(entityFile);
 		assertEquals("br.com.ctbc.model", cleanner.getPackageClass());
 	}
-	
-	@Test(expected=NotFoundPackage.class)
+
+	@Test(expected = NotFoundPackage.class)
 	public void shouldNotFoundPackageExceptionIfGetPackageFails() throws Exception {
 		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + NO_PACKAGE_CLASS);
 
