@@ -99,7 +99,11 @@ public class OrmCleanner extends AbstractMojo {
 			deleteAllFilesOnOutputDirectory(pack);
 		}
 
-		List<File> filesToScan = getFilesToScan("");
+		List<File> filesToScan = new ArrayList<File>();
+		for (String dir : scanDirs) {
+			filesToScan.addAll( getFilesToScan(dir) );
+		}
+		
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
 
 		cleanAndSaveFiles(filesToCleanAndSave);
@@ -151,8 +155,11 @@ public class OrmCleanner extends AbstractMojo {
 		for (File currentFile : filesToScan) {
 			try {
 				FileCleanner cleanner = new FileCleanner(currentFile);
-				if (cleanner.isEntity())
+				getLog().debug(String.format("File: %s", currentFile));
+				if (cleanner.isEntity()) {
 					filesToCleanAndSave.add(cleanner);
+					getLog().debug("is entity: %s");
+				}
 			} catch (FileNotFoundException e) {
 				getLog().error(String.format("File %s not found", currentFile.toString()), e);
 			} catch (IOException e) {
