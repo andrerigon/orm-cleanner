@@ -23,9 +23,10 @@ Usage
    <plugin>
       <groupId>br.com.zup</groupId>
       <artifactId>orm-cleanner</artifactId>
+      <version>1.0.3</version>
       <configuration>
-         <outputDirectory>/home/user/project-exemple</outputDirectory>
-         <packageScan>org.organization.model.entities</packageScan>
+         <outputDirectory>${basedir}/project-exemple</outputDirectory>
+         <packageScan>project-1:org.organization.model.entities; project-2:org.organization.domain.entities</packageScan>
       </configuration>
       <executions>
          <execution>
