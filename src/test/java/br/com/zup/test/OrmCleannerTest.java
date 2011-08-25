@@ -56,30 +56,33 @@ public class OrmCleannerTest extends PlexusTestCase {
 		
 		Collections.sort(files);
 		
-		List<File> filesScanned = mojoTest.getFilesToScan();
+		List<File> filesScanned = mojoTest.getFilesToScan("");
 		Collections.sort(filesScanned);
 		
 		assertEquals(files,filesScanned);
 	}
 	
-	public void testDeleteFilesOnExtract() throws Exception {
-		mojo.deleteAllFilesOnOutputDirectory(DEFAULT_PACKAGE_SCAN);
-		
-		OrmCleanner mojoTest = (OrmCleanner) lookup(OrmCleanner.ROLE);
-		mojoTest.setBasedir(new File(DEFAULT_WRITE_DIRECTORY));
-		mojoTest.setPackageScan(DEFAULT_PACKAGE_SCAN);
-		
-		List<File> files = new ArrayList<File>();
-		
-		assertEquals(files,mojoTest.getFilesToScan());
-	}
+//	public void testDeleteFilesOnExtract() throws Exception {
+//		mojo.deleteAllFilesOnOutputDirectory(DEFAULT_PACKAGE_SCAN);
+//		
+//		OrmCleanner mojoTest = (OrmCleanner) lookup(OrmCleanner.ROLE);
+//		mojoTest.setBasedir(new File(DEFAULT_WRITE_DIRECTORY));
+//		mojoTest.setPackageScan("project-test:br.com.zup.domain;project-test:br.com.zup.api");
+//		
+//		List<File> files = new ArrayList<File>();
+//		
+//		assertEquals(files,mojoTest.getFilesToScan("project-test/src/main/java/" + OrmCleanner.packageToDirectory(DEFAULT_PACKAGE_SCAN)));
+//	}
 	
 	public void testGetFilesToScan() {
-		List<File> scanFiles = mojo.getFilesToScan();
-		assertNotNull(scanFiles);
 		List<File> testFiles = getFilesTest();
 		Collections.sort( testFiles );
+		System.out.println("espected: " + testFiles);
+		
+		List<File> scanFiles = mojo.getFilesToScan( "project-test/src/main/java/" + OrmCleanner.packageToDirectory(DEFAULT_PACKAGE_SCAN) );
+		assertNotNull(scanFiles);
 		Collections.sort( scanFiles );
+		System.out.println("actual: " + scanFiles);
 		assertEquals(testFiles, scanFiles);
 	}
 	
@@ -111,10 +114,10 @@ public class OrmCleannerTest extends PlexusTestCase {
 		
 		List<String> dirs = mojo.getDirsToScan(projects);
 		List<String> compareDirs = new ArrayList<String>();
-		compareDirs.add("project-test/br/com/zup/domain");
-		compareDirs.add("project-test/br/com/comporation/api");
-		compareDirs.add("project-exemple/br/com/organization/domain");
-		compareDirs.add("project-exemple/br/com/organization/api");
+		compareDirs.add("project-test/src/main/java/br/com/zup/domain");
+		compareDirs.add("project-test/src/main/java/br/com/comporation/api");
+		compareDirs.add("project-exemple/src/main/java/br/com/organization/domain");
+		compareDirs.add("project-exemple/src/main/java/br/com/organization/api");
 		
 		Collections.sort(dirs);
 		Collections.sort(compareDirs);
@@ -140,12 +143,12 @@ public class OrmCleannerTest extends PlexusTestCase {
 	
 	private List<File> getFilesTest() {
 		List<File> files = new ArrayList<File>();
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/Agent.java") );
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/AgentClean.java") );
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/Agreement.java") );
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/subModel/Agent.java") );
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/subModel/Agreement.java") );
-		files.add( new File(OUTPUT_DIRECTORY, DEFAULT_DIRECTORY_SCAN + "/AgentNoPackage.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/Agent.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/AgentClean.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/Agreement.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/subModel/Agent.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/subModel/Agreement.java") );
+		files.add( new File(OUTPUT_DIRECTORY, "project-test/" + DEFAULT_DIRECTORY_SCAN + "/AgentNoPackage.java") );
 		
 		return files;
 	}

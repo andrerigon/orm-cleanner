@@ -99,7 +99,7 @@ public class OrmCleanner extends AbstractMojo {
 			deleteAllFilesOnOutputDirectory(pack);
 		}
 
-		List<File> filesToScan = getFilesToScan();
+		List<File> filesToScan = getFilesToScan("");
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
 
 		cleanAndSaveFiles(filesToCleanAndSave);
@@ -136,7 +136,7 @@ public class OrmCleanner extends AbstractMojo {
 		List<String> directories = new ArrayList<String>();
 		for (String key: projects.keySet()) {
 			for (String currentPackage: projects.get(key)) {
-				directories.add(key + fileSeparator + packageToDirectory(currentPackage) );
+				directories.add(key + fileSeparator + LOCATION_SOURCE + fileSeparator + packageToDirectory(currentPackage) );
 			}
 		}
 		return directories;
@@ -185,22 +185,22 @@ public class OrmCleanner extends AbstractMojo {
 		}
 	}
 
-	public List<File> getFilesToScan() {
+	public List<File> getFilesToScan(String baseDirectory) {
 		getLog().debug("In OrmCleanner::getFilesToScan()");
 		
-		File sourceLocation = new File(basedir, LOCATION_SOURCE);
+		File sourceLocation = new File(basedir, baseDirectory);
 		List<File> files = new ArrayList<File>();
 
-		getLog().info(String.format("Dirs: %s", this.packageScan));
-		String[] packages = this.packageScan.split(";");
-		for (String currentPackage: packages) {
-			String pack = currentPackage.trim();
-			getLog().info(String.format("Pacakge: %s", pack));
-			File directoryScan = new File(sourceLocation, packageToDirectory(pack));
+		getLog().info(String.format("Dirs: %s", baseDirectory));
+//		String[] packages = this.packageScan.split(";");
+//		for (String currentPackage: packages) {
+//			String pack = currentPackage.trim();
+//			getLog().info(String.format("Pacakge: %s", pack));
+//			File directoryScan = new File(sourceLocation, packageToDirectory(pack));
 			
-			getLog().info(String.format("Dir: %s", directoryScan));
-			files.addAll(getAllFilesFromDirectory(directoryScan));
-		}
+//			getLog().info(String.format("Dir: %s", directoryScan));
+		files.addAll(getAllFilesFromDirectory(sourceLocation));
+//		}
 
 		return files;
 	}
