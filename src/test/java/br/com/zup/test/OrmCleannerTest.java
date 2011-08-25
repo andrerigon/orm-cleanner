@@ -63,7 +63,7 @@ public class OrmCleannerTest extends PlexusTestCase {
 	}
 	
 	public void testDeleteFilesOnExtract() throws Exception {
-		mojo.deleteAllFilesOnOutputDirectory();
+		mojo.deleteAllFilesOnOutputDirectory(DEFAULT_PACKAGE_SCAN);
 		
 		OrmCleanner mojoTest = (OrmCleanner) lookup(OrmCleanner.ROLE);
 		mojoTest.setBasedir(new File(DEFAULT_WRITE_DIRECTORY));

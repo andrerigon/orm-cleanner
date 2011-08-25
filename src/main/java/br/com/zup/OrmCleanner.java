@@ -95,8 +95,9 @@ public class OrmCleanner extends AbstractMojo {
 		List<String> scanDirs = getDirsToScan(projectsToScan);
 		
 		List<String> packages = getPackages(projectsToScan);
-		
-		deleteAllFilesOnOutputDirectory();
+		for (String pack : packages) {
+			deleteAllFilesOnOutputDirectory(pack);
+		}
 
 		List<File> filesToScan = getFilesToScan();
 		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
@@ -243,10 +244,10 @@ public class OrmCleanner extends AbstractMojo {
 		this.basedir = basedir;
 	}
 
-	public void deleteAllFilesOnOutputDirectory() {
+	public void deleteAllFilesOnOutputDirectory(String packageToDelete) {
 		getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
 		
-		File directoryToDelete = new File( new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(packageScan) );
+		File directoryToDelete = new File( new File(outputDirectory, LOCATION_SOURCE), packageToDirectory(packageToDelete) );
 	    try {
 	    	deleteFiles(directoryToDelete);
 	    } catch (IOException e) {
