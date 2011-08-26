@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.zup.OrmCleanner;
 import br.com.zup.exception.NotFoundPackage;
 
 public class FileCleanner {
@@ -75,6 +76,36 @@ public class FileCleanner {
 		return (matcher.find());
 	}
 
+	public String alterPackage() throws IOException {
+		StringBuilder content = new StringBuilder();
+		this.replacePackage(content);
+		return content.toString();
+	}
+
+	private void replacePackage(StringBuilder content) throws IOException {
+		BufferedReader reader = this.getReader();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			this.packageLine(content, line);
+		}
+	}
+
+	private void packageLine(StringBuilder content, String line) {
+		Matcher matcher = matcherFromRegex(line, FileCleanner.regexPackage);
+		line = this.packageByMatcher(line, matcher);
+		content.append(line);
+	}
+
+	private String packageByMatcher(String line, Matcher matcher) {
+		if (matcher.find()) {
+			if (matcher.groupCount() > 0) {
+				String pack = matcher.group(1);
+				line = line.replaceAll(pack, String.format("%s.%s", OrmCleanner.DEFAULT_PACKAGE, pack));
+			}
+		}
+		return line;
+	}
+
 	public String clean() throws IOException {
 		StringBuilder entityClean = new StringBuilder();
 		this.replaceContent(entityClean);
@@ -82,7 +113,7 @@ public class FileCleanner {
 	}
 
 	private void replaceContent(StringBuilder entityClean) throws IOException {
-		BufferedReader reader = getReader();
+		BufferedReader reader = this.getReader();
 		String currentLine;
 		while ((currentLine = reader.readLine()) != null) {
 			this.cleanLine(entityClean, currentLine);
@@ -111,7 +142,7 @@ public class FileCleanner {
 	}
 
 	private Matcher matcherFromRegex(String currentLine, String regex) {
-		Pattern currentPattern = Pattern.compile(regex);
+		Pattern currentPattern = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher matcher = currentPattern.matcher(currentLine);
 		return matcher;
 	}
@@ -122,8 +153,9 @@ public class FileCleanner {
 		while ((line = reader.readLine()) != null) {
 			Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
 			while (matcher.find()) {
-				if (matcher.groupCount() > 0)
+				if (matcher.groupCount() > 0) {
 					return matcher.group(1);
+				}
 			}
 		}
 		throw new NotFoundPackage(String.format("%s not contains package", this.javaClass.getName()));

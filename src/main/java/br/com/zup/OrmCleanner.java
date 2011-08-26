@@ -60,8 +60,8 @@ public class OrmCleanner extends AbstractMojo {
 	private static final String fileSeparator = System.getProperty("file.separator");
 
 	private static final String LOCATION_SOURCE = "src/main/java".replaceAll("/", fileSeparator);
-	
-	private static final String DEFAULT_PACKAGE = "cleanner";
+
+	public static final String DEFAULT_PACKAGE = "cleanner";
 
 	/**
 	 * Location of the output jar.
@@ -147,8 +147,8 @@ public class OrmCleanner extends AbstractMojo {
 		List<String> directories = new ArrayList<String>();
 		for (String key : projects.keySet()) {
 			for (String currentPackage : projects.get(key)) {
-				directories.add(key + fileSeparator + LOCATION_SOURCE + fileSeparator
-						+ OrmCleanner.packageToDirectory(currentPackage));
+				directories.add(key + OrmCleanner.fileSeparator + OrmCleanner.LOCATION_SOURCE
+						+ OrmCleanner.fileSeparator + OrmCleanner.packageToDirectory(currentPackage));
 			}
 		}
 		return directories;
@@ -181,20 +181,20 @@ public class OrmCleanner extends AbstractMojo {
 		this.getLog().debug("In OrmCleanner::cleanAndSaveFiles()");
 
 		this.getLog().info(String.format("Saving files: %s", filesToCleanAndSave.toString()));
-		File outputDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
-		File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
+		File saveSourceDirectory = this.getSaveSourceDirectory();
 		for (FileCleanner currentCleanner : filesToCleanAndSave) {
 			try {
 				File parentSaveDirectory = new File(saveSourceDirectory, OrmCleanner.packageToDirectory(currentCleanner
 						.getPackageClass()));
 				parentSaveDirectory.mkdirs();
-				
+
 				File fileWrite = new File(parentSaveDirectory, currentCleanner.getClassName());
 				FileWriter writterClass = new FileWriter(fileWrite);
-				
+
+				writterClass.write(currentCleanner.alterPackage());
 				writterClass.write(currentCleanner.clean());
 				writterClass.close();
-				
+
 				this.getLog().info(String.format("Saving %s", fileWrite.toString()));
 			} catch (IOException e) {
 				this.getLog().error(String.format("Errors occurred when saving file: %s", currentCleanner.toString()),
@@ -238,6 +238,12 @@ public class OrmCleanner extends AbstractMojo {
 		return packageToConverter.replaceAll("\\.", OrmCleanner.fileSeparator);
 	}
 
+	public File getSaveSourceDirectory() {
+		File outputDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
+		File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
+		return saveSourceDirectory;
+	}
+
 	public void setOutputDirectory(File outputDirectory) {
 		this.getLog().debug("In OrmCleanner::setOutputDirectory()");
 
@@ -259,7 +265,7 @@ public class OrmCleanner extends AbstractMojo {
 	public void deleteAllFilesOnOutputDirectory(String packageToDelete) {
 		this.getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
 
-		File directoryToDelete = new File(new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE),
+		File directoryToDelete = new File(this.getSaveSourceDirectory(),
 				OrmCleanner.packageToDirectory(packageToDelete));
 		try {
 			this.deleteFiles(directoryToDelete);
