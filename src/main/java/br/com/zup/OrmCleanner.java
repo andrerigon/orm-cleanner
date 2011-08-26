@@ -238,8 +238,8 @@ public class OrmCleanner extends AbstractMojo {
 	}
 
 	public File getSaveSourceDirectory() {
-		File outputDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
-		File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
+		File saveSourceDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
+		//File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
 		return saveSourceDirectory;
 	}
 
