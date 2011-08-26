@@ -95,7 +95,8 @@ public class FileCleanner {
 	private void cleanLine(StringBuilder entityClean, String currentLine) {
 		currentLine = this.lineRemove(currentLine);
 		currentLine = this.packageLine(currentLine);
-		entityClean.append(currentLine + System.getProperty("line.separator"));
+		//currentLine += System.getProperty("line.separator"); // For debug!
+		entityClean.append(currentLine);
 	}
 
 	private String lineRemove(String currentLine) {
@@ -114,10 +115,7 @@ public class FileCleanner {
 	}
 
 	private String packageLine(String line) {
-		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
-		line = this.packageByMatcher(line, matcher);
-
-		matcher = this.matcherFromRegex(line, FileCleanner.regexImportPackage);
+		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexImportPackage);
 		line = this.packageByMatcher(line, matcher);
 
 		return line;
