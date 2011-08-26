@@ -57,11 +57,11 @@ public class OrmCleanner extends AbstractMojo {
 
 	private static final String EXCLUDE_SVN = ".svn";
 
-	private static final String fileSeparator = System.getProperty("file.separator");
-
-	private static final String LOCATION_SOURCE = "src/main/java".replaceAll("/", fileSeparator);
-
 	public static final String DEFAULT_PACKAGE = "cleanner";
+
+	private String locationSource;
+
+	private String fileSeparator;
 
 	/**
 	 * Location of the output jar.
@@ -90,6 +90,8 @@ public class OrmCleanner extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		this.getLog().debug("In OrmCleanner::execute()");
 
+		this.setFileSeparatorAndLocationSource();
+
 		// Project and list of packages
 		Map<String, List<String>> projectsToScan = this.getProjectsAndPackages(packageScan);
 
@@ -108,6 +110,14 @@ public class OrmCleanner extends AbstractMojo {
 		List<FileCleanner> filesToCleanAndSave = this.getFilesToCleanAndSave(filesToScan);
 
 		this.cleanAndSaveFiles(filesToCleanAndSave);
+	}
+
+	private void setFileSeparatorAndLocationSource() {
+		this.getLog().debug("In OrmCleanner::setFileSeparatorAndLocationSource()");
+		
+		fileSeparator = System.getProperty("file.separator");
+		locationSource = "src" + this.fileSeparator + "main" + this.fileSeparator + "java";
+		this.getLog().debug("locationSource:" + this.locationSource);
 	}
 
 	public Map<String, List<String>> getProjectsAndPackages(String projectsAndPackages) {
@@ -147,8 +157,8 @@ public class OrmCleanner extends AbstractMojo {
 		List<String> directories = new ArrayList<String>();
 		for (String key : projects.keySet()) {
 			for (String currentPackage : projects.get(key)) {
-				directories.add(key + OrmCleanner.fileSeparator + OrmCleanner.LOCATION_SOURCE
-						+ OrmCleanner.fileSeparator + OrmCleanner.packageToDirectory(currentPackage));
+				directories.add(key + this.fileSeparator + this.locationSource + this.fileSeparator
+						+ this.packageToDirectory(currentPackage));
 			}
 		}
 		return directories;
@@ -184,7 +194,7 @@ public class OrmCleanner extends AbstractMojo {
 		File saveSourceDirectory = this.getSaveSourceDirectory();
 		for (FileCleanner currentCleanner : filesToCleanAndSave) {
 			try {
-				File parentSaveDirectory = new File(saveSourceDirectory, OrmCleanner.packageToDirectory(currentCleanner
+				File parentSaveDirectory = new File(saveSourceDirectory, this.packageToDirectory(currentCleanner
 						.getPackageClass()));
 				parentSaveDirectory.mkdirs();
 
@@ -233,13 +243,26 @@ public class OrmCleanner extends AbstractMojo {
 		return list;
 	}
 
-	public static String packageToDirectory(String packageToConverter) {
-		return packageToConverter.replaceAll("\\.", OrmCleanner.fileSeparator);
+	public String packageToDirectory(String packageToConverter) {
+		this.getLog().debug("In OrmCleanner::packageToDirectory()");
+		
+		// I know it's very very uggly, but works!
+		if ("\\".equals(System.getProperty("file.separator"))) {// windows
+			return packageToConverter.replaceAll("\\.", "\\" + this.fileSeparator);
+			// others SO's
+		} else {
+			this.getLog().info("HAHAHAHAHHAHAH");
+			return packageToConverter.replaceAll("\\.", this.fileSeparator);
+		}
 	}
 
 	public File getSaveSourceDirectory() {
-		File saveSourceDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
-		//File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
+		this.getLog().debug("In OrmCleanner::getSaveSourceDirectory()");
+		
+		File saveSourceDirectory = new File(this.outputDirectory, this.locationSource);
+		// Change package
+		// saveSourceDirectory = new File(saveSourceDirectory,
+		// OrmCleanner.DEFAULT_PACKAGE);
 		return saveSourceDirectory;
 	}
 
@@ -264,8 +287,7 @@ public class OrmCleanner extends AbstractMojo {
 	public void deleteAllFilesOnOutputDirectory(String packageToDelete) {
 		this.getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
 
-		File directoryToDelete = new File(this.getSaveSourceDirectory(),
-				OrmCleanner.packageToDirectory(packageToDelete));
+		File directoryToDelete = new File(this.getSaveSourceDirectory(), this.packageToDirectory(packageToDelete));
 		try {
 			this.deleteFiles(directoryToDelete);
 		} catch (IOException e) {

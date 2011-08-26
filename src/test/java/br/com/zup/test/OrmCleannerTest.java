@@ -125,7 +125,7 @@ public class OrmCleannerTest extends PlexusTestCase {
 
 	public void testPackageToDirectory() {
 		String directory;
-		directory = OrmCleanner.packageToDirectory(DEFAULT_PACKAGE_SCAN);
+		directory = new OrmCleanner().packageToDirectory(DEFAULT_PACKAGE_SCAN);
 		assertEquals("br/com/ctbc/model".replaceAll("/", System.getProperty("file.separator")), directory);
 	}
 
