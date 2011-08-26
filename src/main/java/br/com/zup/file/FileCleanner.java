@@ -43,6 +43,8 @@ public class FileCleanner {
 	private File javaClass;
 
 	private static final String regexPackage = "package (.*?);";
+	
+	private static final String importPackage = "import (.*?);";
 
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
@@ -91,8 +93,12 @@ public class FileCleanner {
 	}
 
 	private void packageLine(StringBuilder content, String line) {
-		Matcher matcher = matcherFromRegex(line, FileCleanner.regexPackage);
+		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
 		line = this.packageByMatcher(line, matcher);
+		
+		matcher = this.matcherFromRegex(line, FileCleanner.importPackage);
+		line = this.packageByMatcher(line, matcher);
+		
 		content.append(line);
 	}
 
