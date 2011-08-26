@@ -89,23 +89,23 @@ public class OrmCleanner extends AbstractMojo {
 		this.getLog().debug("In OrmCleanner::execute()");
 
 		// Project and list of packages
-		Map<String, List<String>> projectsToScan = getProjectsAndPackages(packageScan);
+		Map<String, List<String>> projectsToScan = this.getProjectsAndPackages(packageScan);
 
-		List<String> scanDirs = getDirsToScan(projectsToScan);
+		List<String> scanDirs = this.getDirsToScan(projectsToScan);
 
-		List<String> packages = getPackages(projectsToScan);
+		List<String> packages = this.getPackages(projectsToScan);
 		for (String pack : packages) {
-			deleteAllFilesOnOutputDirectory(pack);
+			this.deleteAllFilesOnOutputDirectory(pack);
 		}
 
 		List<File> filesToScan = new ArrayList<File>();
 		for (String dir : scanDirs) {
-			filesToScan.addAll(getFilesToScan(dir));
+			filesToScan.addAll(this.getFilesToScan(dir));
 		}
 
-		List<FileCleanner> filesToCleanAndSave = getFilesToCleanAndSave(filesToScan);
+		List<FileCleanner> filesToCleanAndSave = this.getFilesToCleanAndSave(filesToScan);
 
-		cleanAndSaveFiles(filesToCleanAndSave);
+		this.cleanAndSaveFiles(filesToCleanAndSave);
 	}
 
 	public Map<String, List<String>> getProjectsAndPackages(String projectsAndPackages) {
@@ -146,7 +146,7 @@ public class OrmCleanner extends AbstractMojo {
 		for (String key : projects.keySet()) {
 			for (String currentPackage : projects.get(key)) {
 				directories.add(key + fileSeparator + LOCATION_SOURCE + fileSeparator
-						+ packageToDirectory(currentPackage));
+						+ OrmCleanner.packageToDirectory(currentPackage));
 			}
 		}
 		return directories;
@@ -179,16 +179,19 @@ public class OrmCleanner extends AbstractMojo {
 		this.getLog().debug("In OrmCleanner::cleanAndSaveFiles()");
 
 		this.getLog().info(String.format("Saving files: %s", filesToCleanAndSave.toString()));
-		File saveSourceDirectory = new File(outputDirectory, LOCATION_SOURCE);
+		File saveSourceDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
 		for (FileCleanner currentCleanner : filesToCleanAndSave) {
 			try {
-				File parentSaveDirectory = new File(saveSourceDirectory,
-						packageToDirectory(currentCleanner.getPackageClass()));
+				File parentSaveDirectory = new File(saveSourceDirectory, OrmCleanner.packageToDirectory(currentCleanner
+						.getPackageClass()));
 				parentSaveDirectory.mkdirs();
+				
 				File fileWrite = new File(parentSaveDirectory, currentCleanner.getClassName());
 				FileWriter writterClass = new FileWriter(fileWrite);
+				
 				writterClass.write(currentCleanner.clean());
 				writterClass.close();
+				
 				this.getLog().info(String.format("Saving %s", fileWrite.toString()));
 			} catch (IOException e) {
 				this.getLog().error(String.format("Errors occurred when saving file: %s", currentCleanner.toString()),
@@ -206,7 +209,7 @@ public class OrmCleanner extends AbstractMojo {
 		List<File> files = new ArrayList<File>();
 
 		this.getLog().info(String.format("Dirs: %s", baseDirectory));
-		files.addAll(getAllFilesFromDirectory(sourceLocation));
+		files.addAll(this.getAllFilesFromDirectory(sourceLocation));
 
 		return files;
 	}
@@ -217,8 +220,8 @@ public class OrmCleanner extends AbstractMojo {
 		List<File> files = new ArrayList<File>();
 		if (directory.isDirectory() && !directory.getName().equals(EXCLUDE_SVN))
 			for (File currentFile : directory.listFiles())
-				files.addAll(getAllFilesFromDirectory(currentFile));
-		return directory.isFile() ? addFileToListt(directory, files) : files;
+				files.addAll(this.getAllFilesFromDirectory(currentFile));
+		return directory.isFile() ? this.addFileToListt(directory, files) : files;
 	}
 
 	private List<File> addFileToListt(File directory, List<File> list) {
@@ -254,7 +257,7 @@ public class OrmCleanner extends AbstractMojo {
 		this.getLog().debug("In OrmCleanner::deleteAllFilesOnOutputDirectory()");
 
 		File directoryToDelete = new File(new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE),
-				packageToDirectory(packageToDelete));
+				OrmCleanner.packageToDirectory(packageToDelete));
 		try {
 			this.deleteFiles(directoryToDelete);
 		} catch (IOException e) {
@@ -269,7 +272,7 @@ public class OrmCleanner extends AbstractMojo {
 			List<File> files = Arrays.asList(file.listFiles());
 			if (!files.isEmpty())
 				for (File currentFile : files) {
-					deleteFiles(currentFile);
+					this.deleteFiles(currentFile);
 				}
 		}
 		file.delete();
