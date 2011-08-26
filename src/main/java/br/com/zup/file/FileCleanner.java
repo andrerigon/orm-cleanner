@@ -42,9 +42,9 @@ public class FileCleanner {
 
 	private File javaClass;
 
-	private static final String regexPackage = "package (.*?);";
-	
-	private static final String importPackage = "import (.*?);";
+	private static final String regexPackage = "package (.+?);";
+
+	private static final String importPackage = "import (br.com.ctbc.maestro.+?);";
 
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
@@ -69,47 +69,13 @@ public class FileCleanner {
 	}
 
 	private boolean existisEntity(String line) {
-		Matcher matcher = matcherFromRegex(line, LinesRemove.ANNOTATION_ENTITY);
+		Matcher matcher = this.matcherFromRegex(line, LinesRemove.ANNOTATION_ENTITY);
 		return (matcher.find());
 	}
 
 	private boolean existisCleanner(String line) {
-		Matcher matcher = matcherFromRegex(line, LinesRemove.ANNOTATION_CLEANNER);
+		Matcher matcher = this.matcherFromRegex(line, LinesRemove.ANNOTATION_CLEANNER);
 		return (matcher.find());
-	}
-
-	public String alterPackage() throws IOException {
-		StringBuilder content = new StringBuilder();
-		this.replacePackage(content);
-		return content.toString();
-	}
-
-	private void replacePackage(StringBuilder content) throws IOException {
-		BufferedReader reader = this.getReader();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			this.packageLine(content, line);
-		}
-	}
-
-	private void packageLine(StringBuilder content, String line) {
-		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
-		line = this.packageByMatcher(line, matcher);
-		
-		matcher = this.matcherFromRegex(line, FileCleanner.importPackage);
-		line = this.packageByMatcher(line, matcher);
-		
-		content.append(line);
-	}
-
-	private String packageByMatcher(String line, Matcher matcher) {
-		if (matcher.find()) {
-			if (matcher.groupCount() > 0) {
-				String pack = matcher.group(1);
-				line = line.replaceAll(pack, String.format("%s.%s", OrmCleanner.DEFAULT_PACKAGE, pack));
-			}
-		}
-		return line;
 	}
 
 	public String clean() throws IOException {
@@ -127,18 +93,44 @@ public class FileCleanner {
 	}
 
 	private void cleanLine(StringBuilder entityClean, String currentLine) {
-		for (LinesRemove currentRegex : LinesRemove.values()) {
-			Matcher matcher = matcherFromRegex(currentLine, currentRegex);
-			currentLine = this.cleanByMatcher(currentLine, matcher);
-		}
-		entityClean.append(currentLine);
+		currentLine = this.lineRemove(currentLine);
+		currentLine = this.packageLine(currentLine);
+		entityClean.append(currentLine + System.lineSeparator());
 	}
 
-	private String cleanByMatcher(String currentLine, Matcher matcher) {
+	private String lineRemove(String currentLine) {
+		for (LinesRemove currentRegex : LinesRemove.values()) {
+			Matcher matcher = this.matcherFromRegex(currentLine, currentRegex);
+			currentLine = this.lineRemoveByMatcher(currentLine, matcher);
+		}
+		return currentLine;
+	}
+
+	private String lineRemoveByMatcher(String currentLine, Matcher matcher) {
 		while (matcher.find()) {
 			currentLine = matcher.replaceAll("");
 		}
 		return currentLine;
+	}
+
+	private String packageLine(String line) {
+		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
+		line = this.packageByMatcher(line, matcher);
+
+		matcher = this.matcherFromRegex(line, FileCleanner.importPackage);
+		line = this.packageByMatcher(line, matcher);
+
+		return line;
+	}
+
+	private String packageByMatcher(String line, Matcher matcher) {
+		if (matcher.find()) {
+			if (matcher.groupCount() > 0) {
+				String pack = matcher.group(1);
+				line = line.replaceAll(pack, String.format("%s.%s", OrmCleanner.DEFAULT_PACKAGE, pack));
+			}
+		}
+		return line;
 	}
 
 	private Matcher matcherFromRegex(String currentLine, LinesRemove regex) {

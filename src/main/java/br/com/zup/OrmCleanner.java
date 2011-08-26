@@ -191,7 +191,6 @@ public class OrmCleanner extends AbstractMojo {
 				File fileWrite = new File(parentSaveDirectory, currentCleanner.getClassName());
 				FileWriter writterClass = new FileWriter(fileWrite);
 
-				writterClass.write(currentCleanner.alterPackage());
 				writterClass.write(currentCleanner.clean());
 				writterClass.close();
 
