@@ -60,6 +60,8 @@ public class OrmCleanner extends AbstractMojo {
 	private static final String fileSeparator = System.getProperty("file.separator");
 
 	private static final String LOCATION_SOURCE = "src/main/java".replaceAll("/", fileSeparator);
+	
+	private static final String DEFAULT_PACKAGE = "cleanner";
 
 	/**
 	 * Location of the output jar.
@@ -179,7 +181,8 @@ public class OrmCleanner extends AbstractMojo {
 		this.getLog().debug("In OrmCleanner::cleanAndSaveFiles()");
 
 		this.getLog().info(String.format("Saving files: %s", filesToCleanAndSave.toString()));
-		File saveSourceDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
+		File outputDirectory = new File(this.outputDirectory, OrmCleanner.LOCATION_SOURCE);
+		File saveSourceDirectory = new File(outputDirectory, OrmCleanner.DEFAULT_PACKAGE);
 		for (FileCleanner currentCleanner : filesToCleanAndSave) {
 			try {
 				File parentSaveDirectory = new File(saveSourceDirectory, OrmCleanner.packageToDirectory(currentCleanner
