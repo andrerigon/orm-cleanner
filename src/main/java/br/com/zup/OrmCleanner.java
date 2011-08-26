@@ -251,7 +251,6 @@ public class OrmCleanner extends AbstractMojo {
 			return packageToConverter.replaceAll("\\.", "\\" + this.fileSeparator);
 			// others SO's
 		} else {
-			this.getLog().info("HAHAHAHAHHAHAH");
 			return packageToConverter.replaceAll("\\.", this.fileSeparator);
 		}
 	}
