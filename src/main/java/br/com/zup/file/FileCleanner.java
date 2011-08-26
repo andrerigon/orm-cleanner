@@ -95,7 +95,7 @@ public class FileCleanner {
 	private void cleanLine(StringBuilder entityClean, String currentLine) {
 		currentLine = this.lineRemove(currentLine);
 		currentLine = this.packageLine(currentLine);
-		entityClean.append(currentLine + System.lineSeparator());
+		entityClean.append(currentLine + System.getProperty("line.separator"));
 	}
 
 	private String lineRemove(String currentLine) {
