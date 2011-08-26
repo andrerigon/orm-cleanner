@@ -44,7 +44,7 @@ public class FileCleanner {
 
 	private static final String regexPackage = "package (.+?);";
 
-	private static final String importPackage = "import (br.com.ctbc.maestro.+?);";
+	private static final String regexImportPackage = "(br.com.ctbc.maestro.*?.domain.+?)";
 
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
@@ -117,7 +117,7 @@ public class FileCleanner {
 		Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
 		line = this.packageByMatcher(line, matcher);
 
-		matcher = this.matcherFromRegex(line, FileCleanner.importPackage);
+		matcher = this.matcherFromRegex(line, FileCleanner.regexImportPackage);
 		line = this.packageByMatcher(line, matcher);
 
 		return line;
