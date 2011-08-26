@@ -61,7 +61,7 @@ public class FileCleannerTest {
 		File entityFile = new File(LOCAL_DIR + LOCATION_CLASSES + ENTITY_CLASS);
 
 		FileCleanner cleanner = new FileCleanner(entityFile);
-		assertTrue(cleanner.isEntity());
+		assertTrue(cleanner.isCleanner());
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class FileCleannerTest {
 		File noEntityFile = new File(LOCAL_DIR + LOCATION_CLASSES + NO_ENTITY_CLASS);
 
 		FileCleanner cleanner = new FileCleanner(noEntityFile);
-		assertFalse(cleanner.isEntity());
+		assertFalse(cleanner.isCleanner());
 	}
 
 	@Test

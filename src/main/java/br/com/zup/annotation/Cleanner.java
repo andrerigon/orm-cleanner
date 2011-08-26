@@ -25,29 +25,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package br.com.zup.file;
+package br.com.zup.annotation;
 
-import java.io.File;
-import java.io.IOException;
-
-public class WriteProject {
-
-	private File projectLocation;
-	private static final String DEFAULT_SOURCE_LOCATION = "src/main/java/".replaceAll("/",
-			System.getProperty("file.separator"));
-
-	public WriteProject(File projectLocation) throws IOException {
-		super();
-		this.projectLocation = projectLocation;
-	}
-
-	public void writeDirectoryIfNotExists(String directory) throws IOException {
-		File directoryFile = new File(this.projectLocation, WriteProject.DEFAULT_SOURCE_LOCATION + directory);
-		if (!directoryFile.exists()) {
-			directoryFile.mkdirs();
-		} else if (directoryFile.isFile()) {
-			throw new IOException("Directory can not be created because it already exists a file with the same name");
-		}
-	}
+public @interface Cleanner {
 
 }

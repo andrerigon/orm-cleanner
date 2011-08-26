@@ -40,102 +40,101 @@ import br.com.zup.exception.NotFoundPackage;
 public class FileCleanner {
 
 	private File javaClass;
-//	private FileReader entity;
-//	private BufferedReader reader;
-	
+
 	private static final String regexPackage = "package (.*?);";
-	
+
 	public FileCleanner(File javaClass) throws FileNotFoundException {
 		super();
 		this.javaClass = javaClass;
-//		this.entity = new FileReader(this.javaClass);
-//		this.reader = new BufferedReader(this.entity);
-		
 	}
-	
-	public boolean isEntity() throws IOException {
-		BufferedReader reader = getReader();
+
+	public boolean isCleanner() throws IOException {
+		BufferedReader reader = this.getReader();
 		String line;
-		while ( (line = reader.readLine()) != null ) {
-			if ( existisEntity(line) )
+		while ((line = reader.readLine()) != null) {
+			if (this.existisEntity(line) || this.existisCleanner(line)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private BufferedReader getReader() throws FileNotFoundException {
-		FileReader entityReader = new FileReader(javaClass);
+		FileReader entityReader = new FileReader(this.javaClass);
 		BufferedReader reader = new BufferedReader(entityReader);
 		return reader;
 	}
 
 	private boolean existisEntity(String line) {
 		Matcher matcher = matcherFromRegex(line, LinesRemove.ANNOTATION_ENTITY);
-		if (matcher.find())
-			return true;
-		return false;
+		return (matcher.find());
+	}
+
+	private boolean existisCleanner(String line) {
+		Matcher matcher = matcherFromRegex(line, LinesRemove.ANNOTATION_CLEANNER);
+		return (matcher.find());
 	}
 
 	public String clean() throws IOException {
 		StringBuilder entityClean = new StringBuilder();
-		replaceContent(entityClean);
+		this.replaceContent(entityClean);
 		return entityClean.toString();
 	}
 
 	private void replaceContent(StringBuilder entityClean) throws IOException {
 		BufferedReader reader = getReader();
 		String currentLine;
-		while ( (currentLine = reader.readLine()) != null ) {
-			cleanLine(entityClean, currentLine);
+		while ((currentLine = reader.readLine()) != null) {
+			this.cleanLine(entityClean, currentLine);
 		}
 	}
 
 	private void cleanLine(StringBuilder entityClean, String currentLine) {
-		for (LinesRemove currentRegex :LinesRemove.values() ) {
+		for (LinesRemove currentRegex : LinesRemove.values()) {
 			Matcher matcher = matcherFromRegex(currentLine, currentRegex);
-			currentLine = cleanByMatcher(currentLine, matcher);
+			currentLine = this.cleanByMatcher(currentLine, matcher);
 		}
 		entityClean.append(currentLine);
 	}
 
 	private String cleanByMatcher(String currentLine, Matcher matcher) {
-		while (matcher.find())
+		while (matcher.find()) {
 			currentLine = matcher.replaceAll("");
+		}
 		return currentLine;
 	}
 
 	private Matcher matcherFromRegex(String currentLine, LinesRemove regex) {
-		Pattern currentPattern = Pattern.compile(regex.lineRegex(), Pattern.DOTALL );
+		Pattern currentPattern = Pattern.compile(regex.lineRegex(), Pattern.DOTALL);
 		Matcher matcher = currentPattern.matcher(currentLine);
 		return matcher;
 	}
 
 	private Matcher matcherFromRegex(String currentLine, String regex) {
-		Pattern currentPattern = Pattern.compile(regex );
+		Pattern currentPattern = Pattern.compile(regex);
 		Matcher matcher = currentPattern.matcher(currentLine);
 		return matcher;
 	}
 
 	public String getPackageClass() throws IOException, NotFoundPackage {
-		BufferedReader reader = getReader();
+		BufferedReader reader = this.getReader();
 		String line;
-		while ( (line = reader.readLine()) != null ) {
-			Matcher matcher = matcherFromRegex(line, regexPackage);
+		while ((line = reader.readLine()) != null) {
+			Matcher matcher = this.matcherFromRegex(line, FileCleanner.regexPackage);
 			while (matcher.find()) {
 				if (matcher.groupCount() > 0)
 					return matcher.group(1);
 			}
 		}
-		throw new NotFoundPackage(String.format("%s not contains package", javaClass.getName()));
+		throw new NotFoundPackage(String.format("%s not contains package", this.javaClass.getName()));
 	}
-	
+
 	public String getClassName() {
-		return javaClass.getName();
+		return this.javaClass.getName();
 	}
 
 	@Override
 	public String toString() {
-		return javaClass.toString();
+		return this.javaClass.toString();
 	}
-	
 }

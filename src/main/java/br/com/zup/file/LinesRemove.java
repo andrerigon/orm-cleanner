@@ -34,6 +34,7 @@ public enum LinesRemove {
 	IMPORT_JAVAX_PERSISTENCE("import javax.persistence.(.+?);"),
 	
 	// ANNOTATIONS
+	ANNOTATION_CLEANNER("@Cleanner(\\s*\\(.+?\\))|@Cleanner"),
 	ANNOTATION_ENTITY("@Entity(\\s*\\(.+?\\))|@Entity"),
 	ANNOTATION_TABLE("@Table(\\s*\\(.+?\\))|@Table"),
 	ANNOTATION_ID("@Id(\\s*\\(.+?\\))|@Id"),
@@ -55,7 +56,7 @@ public enum LinesRemove {
 	}
 
 	public String lineRegex() {
-		return lineRegex;
+		return this.lineRegex;
 	}
 	
 	
