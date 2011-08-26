@@ -32,6 +32,7 @@ public enum LinesRemove {
 	// IMPORTS
 	IMPORT_ORM_CLEANNER("import br.com.zup.annotation.Cleanner;"),
 	IMPORT_JAVAX_PERSISTENCE("import javax.persistence.(.+?);"),
+	IMPORT_JAVA_BEANS("import java.beans.(.+?);"),
 	
 	// ANNOTATIONS
 	ANNOTATION_CLEANNER("@Cleanner(\\s*\\(.+?\\))|@Cleanner"),
