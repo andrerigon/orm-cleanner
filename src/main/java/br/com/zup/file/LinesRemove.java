@@ -27,6 +27,7 @@
  */
 package br.com.zup.file;
 
+
 public enum LinesRemove {
 	
 	// IMPORTS
@@ -48,7 +49,10 @@ public enum LinesRemove {
 	ANNOTATION_ONE_TO_MANY("@OneToMany(\\s*\\(.+?\\))|@OneToMany"),
 	ANNOTATION_MANY_TO_MANY("@ManyToMany(\\s*\\(.+?\\))|@ManyToMany"),
 	ANNOTATION_GENERATED_VALUE("@GeneratedValue(\\s*\\(.+?\\))|@GeneratedValue"),
-	ANNOTATION_SEQUENCE_GENERATOR("@SequenceGenerator(\\s*\\(.+?\\))|@SequenceGenerator");
+	ANNOTATION_SEQUENCE_GENERATOR("@SequenceGenerator(\\s*\\(.+?\\))|@SequenceGenerator"),
+	ANNOTATION_EMBEDDED_ID("@EmbeddedId(\\s*\\(.+?\\))|@EmbeddedId"),
+	ANNOTATION_EMBEDDABLE("@Embeddable(\\s*\\(.+?\\))|@Embeddable"),
+	ANNOTATION_VERSION("@Version(\\s*\\(.+?\\))|@Version");
 
 	private final String lineRegex;
 
