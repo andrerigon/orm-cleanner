@@ -35,6 +35,9 @@ public enum LinesRemove {
 	IMPORT_JAVAX_PERSISTENCE("import javax.persistence.(.+?);"),
 	IMPORT_JAVA_BEANS("import java.beans.(.+?);"),
 	
+	// COMMENTS
+	COMMENT_LINE("//(.*)?"),
+	
 	// ANNOTATIONS
 	ANNOTATION_CLEANNER("@Cleanner(\\s*\\(.+?\\))|@Cleanner"),
 	ANNOTATION_ENTITY("@Entity(\\s*\\(.+?\\))|@Entity"),
