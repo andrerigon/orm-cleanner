@@ -42,6 +42,8 @@ public class FileCleanner {
 
 	private File javaClass;
 
+	private JavaCodeFormatter codeFormatter = new JavaCodeFormatter();
+
 	private static final String regexPackage = "package (.+?);";
 
 	private static final String regexImportPackage = "(br.com.ctbc.maestro.*?.domain.+?)";
@@ -81,7 +83,7 @@ public class FileCleanner {
 	public String clean() throws IOException {
 		StringBuilder entityClean = new StringBuilder();
 		this.replaceContent(entityClean);
-		return entityClean.toString();
+		return codeFormatter.format(entityClean.toString());
 	}
 
 	private void replaceContent(StringBuilder entityClean) throws IOException {
